@@ -28,8 +28,10 @@ Collection of articles I've gotten published or presented.
 
 ### UNIX
 [article](github.com/skilbjo/whiteboarding/unix.md)
+
 <img src='./lib/k&r-pdp11.jpg' width=350>
 
 ### Kernel Architecture & Operating Systems
 [article](github.com/skilbjo/whiteboarding/kernel_architecture.md)
+
 <img src='/lib/unikernel.png' width=200>
