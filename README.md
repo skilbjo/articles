@@ -9,22 +9,22 @@ Collection of articles I've gotten published or presented.
 ### Devops & deployemnt on a home data center
 
 <img src='/lib/pdp7.jpeg' width=350>
-[devops](github.com/skilbjo/odroid/deployment.md) Article
+[devops](https://github.com/skilbjo/odroid/deployment.md) Article
 
 ### Clojure, JVM, AWS Lambda, and YOU
 
 <img src='/lib/eval-apply.jpg' width=225>
-- [article](github.com/skilbjo/whiteboarding/clojure_aws_lambda.md) clojure, the jvm, and aws lambda
+- [article](https://github.com/skilbjo/whiteboarding/clojure_aws_lambda.md) clojure, the jvm, and aws lambda
 
 ### CPU Architecture
 
 <img src='/lib/processor-die.jpg' width=250>
-[How computers actually work (unfortunatley)](github.com/skilbjo/whiteboarding/cpu_architecture.md)
+[How computers actually work (unfortunatley)](https://github.com/skilbjo/whiteboarding/cpu_architecture.md)
 
 ### Plan 9
 
 <img src='/lib/plan9bunnyblack.jpg' width=175>
-[Plan 9 from Bell Labs](github.com/skilbjo/whiteboarding/plan9.md)
+[Plan 9 from Bell Labs](https://github.com/skilbjo/whiteboarding/plan9.md)
 
 ### Unix
 
@@ -33,5 +33,5 @@ Collection of articles I've gotten published or presented.
 
 ### OS Kernel Architectures
 
-<img src='/lib/unikernel.jpg' width=200>
+<img src='/lib/unikernel.png' width=200>
 [UNIX](github.com/skilbjo/whiteboarding/kernel_architecture.md)
