@@ -6,20 +6,20 @@ Collection of articles I've gotten published or presented.
 
 ## Topics
 
-### Devops & deployemnt on a home data center
+### Devops & deployment on a home data center
+[article](./odroid/deployment.md)
+
 <img src='./lib/pdp7.jpeg' width=350>
 
-[devops](./odroid/deployment.md)
+### Clojure, the JVM, and AWS Lambda
+[article](./whiteboarding/clojure_aws_lambda.md)
 
-### Clojure, JVM, AWS Lambda, and YOU
 <img src='./lib/eval-apply.jpg' width=225>
 
-- [article](./whiteboarding/clojure_aws_lambda.md) clojure, the jvm, and aws lambda
-
 ### CPU Architecture
-<img src='./lib/processor-die.jpg' width=250>
+[article](https://github.com/skilbjo/whiteboarding/cpu_architecture.md)
 
-[How computers actually work (unfortunatley)](https://github.com/skilbjo/whiteboarding/cpu_architecture.md)
+<img src='./lib/processor-die.jpg' width=250>
 
 ### Plan 9
 <img src='./lib/plan9bunnyblack.jpg' width=175>
