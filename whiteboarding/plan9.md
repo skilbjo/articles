@@ -24,8 +24,13 @@ from 1953.
 
 <img src='../lib/plan9bunnyblack.jpg' width=300>
 
-## History and background
+Plan 9's first release was in 1992, when it was sent to universities in 1992; in 1995
+it was available to the public for $350. In 1996 Plan 9 was put on the back burner
+in favor of Inferno, intended to be a rival to Sun's Java platform. In 2000 it was
+released under an open source license. The fourth and final release came in 2002.
 
+## History and background
+### Bell Labs
 The French government awarded Alexander Graham Bell $10,000 for the invention of the
 telephone; which Bell used to fund the Volta Laboratory. In 1925, the engineering
 department of the American Telephone & Telegraph company and Western Electric Laboratories
@@ -44,13 +49,7 @@ Ken Thompson with support from Dennis Ritchie.
 Plan 9 replaced Unix as Bill Labs's primary platform for operating research. It
 explored serveral changes to the Unix system; noteably in multi-user unvironments.
 
-Plan 9's first release was in 1992, when it was sent to universities in 1992; in 1995
-it was available to the public for $350. In 1996 Plan 9 was put on the back burner
-in favor of Inferno, intended to be a rival to Sun's Java platform. In 2000 it was
-released under an open source license. The fourth and final release came in 2002.
-
-## Unix family tree
-
+### Unix family tree
 Dates are when development work first started; not release date.
 
 Pre history (processing one program):
@@ -64,14 +63,13 @@ Pre history (processing one program):
 - (1957) Atlas Supervisor & BESYS (Bell Operating System)
 - (1961) Compatible Time-Sharing System (CTSS)
 - (1964) Multics
-- (1969) UNIX -> (1978) *BSD, (1987) Mach/Darwin
+- (1969) UNIX -> (1978) *BSD -> (1987) Mach -> (2000) Darwin
 - (1985) Plan 9
 - (1987) Minix
 - (1991) Linux
 - (1996) Inferno
 
 ## Design
-
 Plan 9 was to further the development of Unix concepts.
 
 The foundations of the system are built on two ideas:
@@ -95,9 +93,14 @@ file systems on physically distinct filesystems in a heirarchical namespace, but
 the ability to mount a connection to a server program that uses the same protocol
 and treat its services as part of the client's namespace.
 
-The windowing system is called 8½. It represents the UI on a terminal with three
-pseudo-files, mouse (mouse movements and button clicks), cons (textual input),
-and bitblt (graphical sprites).
+The windowing system initally was called 8½, then moved to rio. Using rio you can
+launch a shell called rc. RC stands for "run commands" and was the inital scripting
+commands to be run, originally on CTSS, then Multics, then Unix. The *rc suffix is
+also the reason we have files like .vimrc.
+
+Back to rio - it represents the UI on a terminal with three pseudo-files, mouse
+(mouse movements and button clicks), cons (textual input), and bitblt (graphical
+sprites).
 
 ## 9P Protocol
 
@@ -143,6 +146,12 @@ Graphical programs invoked from the shell replace in its window.
 
 <img src='../lib/wmii.png' width=500>
 
+## Comparison
+
+Plan 9's kernel (sans drivers) source code is 4,500 lines.
+Minix -> 6,000
+Linix -> 150,000
+
 ## Legacy
 
 > It looks like Plan 9 failed simply because it fell short of being a compelling
@@ -153,8 +162,27 @@ Graphical programs invoked from the shell replace in its window.
 
 — Eric S. Raymond[5]
 
-
 ## Inferno / Vita Nuova
+
+<img src='../lib/inferno.jpg' width=300>
+
+Created by Bell Labs in 1995 after the first release of Plan 9, to bring the ideas
+of Plan 9 to a wider range of devices and networks.
+
+- resource as files
+- namespaces
+- standard communication protocol
+
+Came to the conclusion that a virtual machine was a necessary component of the system
+(same conclusion as the Oak project that became Java). Named it the Dis VM, and is
+a register machine instead of a stack machine.
+
+Portable (ARM, PowerPC, SPARC, x86).
+
+Can run either in kernel mode on bare metal or in userland on Plan 9, Windows, Mac OS,
+Linux, HP-UX.
+
+Meant to compete with Sun Microsystem's Java.
 
 From Vita Nuova website:
 
