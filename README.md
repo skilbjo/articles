@@ -17,21 +17,21 @@ Collection of articles I've gotten published or presented.
 <img src='./lib/eval-apply.jpg' width=225>
 
 ### CPU Architecture
-[article](https://github.com/skilbjo/whiteboarding/cpu_architecture.md)
+[article](./whiteboarding/cpu_architecture.md)
 
 <img src='./lib/processor-die.jpg' width=250>
 
 ### Plan 9 from Bell Labs
-[article](https://github.com/skilbjo/whiteboarding/plan9.md)
+[article](./whiteboarding/plan9.md)
 
 <img src='./lib/plan9bunnyblack.jpg' width=175>
 
 ### UNIX
-[article](github.com/skilbjo/whiteboarding/unix.md)
+[article](./whiteboarding/unix.md)
 
 <img src='./lib/k&r-pdp11.jpg' width=350>
 
 ### Kernel Architecture & Operating Systems
-[article](github.com/skilbjo/whiteboarding/kernel_architecture.md)
+[article](./whiteboarding/kernel_architecture.md)
 
 <img src='/lib/unikernel.png' width=200>
