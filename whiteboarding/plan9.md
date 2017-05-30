@@ -162,6 +162,53 @@ Linix -> 150,000
 
 — Eric S. Raymond[5]
 
+## Reddit
+
+From what I understand of the origins of plan 9, there was an effort to reduce
+and simplify the design. Also, efforts were made to return to core unix philosophy
+of small purposeful tools. Legacy parts of the system such as symbolic links and tty's
+were removed making it simpler and cleaner.
+
+In a sense, the core of the system is a newer design than the three popular OSes.
+In the way of analogy, imagine a parallel reality where Multics/MVS became the dominant
+platform in the world. There are 3D, glossy, ultra virtual reality UI's written for
+it (after an incredible amount of investment) but you still need to set your data s
+et segment size and extents each time that you want to write even a simple file to
+the file system. Someone discovers unix and wants bash, a sane file system and
+virtual desktops. They run on top of the existing system. There is glue that emulates
+unix as best as it can. But the abstraction is incomplete. There are times when you
+have to go back and interact with the data sets, which requires that you still have
+an understanding of the legacy system. Overall, it makes the system harder harder
+to use with its two personalities and the extra cognitive load.
+
+What made unix better than what came before is the "everything is a file" philosophy
+(among other things) and the powerful abstractions consistently applied. What makes
+plan 9 better is the ability to easily create file systems on the fly and mash them
+up in unique ways per process namespace. With each of these leaps the system became
+much simpler, more consistent and easier to use.
+
+What I really like about plan 9 is that the tools you use for one task can be applied
+to another. If you know how to work with files using the shell, then with only a
+little extra understanding you can navigate running processes, look at network
+configuration and even read email. Standard C library functions can be applied the
+same way for your hello world application and your kernel code. If you understand
+namespaces then you can build sandboxes for your servers and also assemble processes
+that run on one machine but operate on files from another. For many popular operating
+systems, each of these examples requires learning something brand new each time without
+alot of transferable skills. With plan 9 I feel that I can be a generalist and work in
+any area that I want or need.
+
+Unfortunately, since plan 9 hasn't gotten anywhere near the same investment in
+the last 20 years as the dominant OSes have the system does feel dated at first,
+but I think that you might find that after a short while you'll find it to be
+very capable, perhaps in different ways than you're used to. Also, a lot of effort
+when into making things simple, consistent and well thought out, instead of "hey,
+this looks cool, let's add it." I'm finding that many of the flashy features I'm
+used to in other interfaces don't really add that much value given the cost of the
+bloat. Meanwhile, there's certainly a lot of opportunity to bring new advances to
+the system. Video and 3D graphics come to mind.
+
+
 ## Inferno / Vita Nuova
 
 <img src='../lib/inferno.jpg' width=300>
