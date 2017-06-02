@@ -61,7 +61,7 @@ Pre history (processing one program):
 
 <img src='../lib/ibm704.jpg' width=900>
 
-- [https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m30s](https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m30s)
+- [https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m](https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m)
 
 (batch processing -> multiprogramming -> time sharing)
 - (1957) Atlas Supervisor & BESYS (Bell Operating System)
