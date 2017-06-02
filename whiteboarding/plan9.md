@@ -59,6 +59,10 @@ Pre history (processing one program):
 - (1947) Transistor
 - (1958) Integrated circuit
 
+<img src='../lib/ibm704.jpg' width=900>
+
+- [https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m30s](https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m30s)
+
 (batch processing -> multiprogramming -> time sharing)
 - (1957) Atlas Supervisor & BESYS (Bell Operating System)
 - (1961) Compatible Time-Sharing System (CTSS)
