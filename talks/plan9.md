@@ -52,8 +52,11 @@ explored serveral changes to the Unix system; noteably in multi-user unvironment
 ### Unix family tree
 Dates are when development work first started; not release date.
 
-Pre history (processing one program):
-- (1860) Analytical Engine -> Charles Babage & Ada Lovelace (gears, cogs, wheels)
+Pre history (tools for calculation, harnessing electric logic, processing one program):
+- (2300BC, 600BC, 500BC, 200BC) Abacus -> Mesopotamian, Persian, Greek, Chinese
+- (1642) Pascal's calulator
+- (1786,1823) Difference Machine & Difference Engine -> J.H. Muller (engineer in Hessian army), Charles Babage
+- (1835) Analytical Engine -> Charles Babage & Ada Lovelace (gears, cogs, wheels)
 - (1907) Vacuum tube
 - (1940) Plugboards (vacuum tubes replacing mechanical relays)
 - (1947) Transistor

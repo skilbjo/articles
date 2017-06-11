@@ -221,16 +221,13 @@
 
 ## Graphs
 ### Empty Container
-![alt tag](cpu_runtime.png)
+<img src='../lib/cpu_runtime.png' width=500>
 
 ### Short runtime
-![alt tag](jvm_vs_node_short.png)
+<img src='../lib/jvm_vs_node_short.png' width=500>
 
 ### Long runtime
-![alt tag](jvm_vs_node_long.png)
+<img src='../lib/jvm_vs_node_long.png' width=500>
 
 ### Summary of usage
-![alt tag](jvm_vs_node_summary.png)
-
-
-
+<img src='../lib/jvm_vs_node_summary.png' width=500>

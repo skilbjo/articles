@@ -4,6 +4,10 @@
 
 ## What is it
 
+## Name
+Munics -> Multiplexed Information and Computing Service)
+Unics -> UNiplexed Information and Computing Service)
+
 ## History and background
 
 <img src='../lib/ibm704.jpg' width=700>
@@ -33,8 +37,11 @@ for their work on operating system theory and for developing Unix.
 ### Unix family tree
 Dates are when development work first started; not release date.
 
-Pre history (processing one program):
-- (1860) Analytical Engine -> Charles Babage & Ada Lovelace (gears, cogs, wheels)
+Pre history (tools for calculation, harnessing electric logic, processing one program):
+- (2300BC, 600BC, 500BC, 200BC) Abacus -> Mesopotamian, Persian, Greek, Chinese
+- (1642) Pascal's calulator
+- (1786,1823) Difference Machine & Difference Engine -> J.H. Muller (engineer in Hessian army), Charles Babage
+- (1835) Analytical Engine -> Charles Babage & Ada Lovelace (gears, cogs, wheels)
 - (1907) Vacuum tube
 - (1940) Plugboards (vacuum tubes replacing mechanical relays)
 - (1947) Transistor
@@ -50,7 +57,9 @@ Pre history (processing one program):
 - (1991) Linux
 - (1996) Inferno
 
-<img src='../lib/unix-history-simple.svg' width=700>
+<img src='../lib/unix-history-simple.png' width=700>
+
+<img src='../lib/unix-history-super-simple.png' width=700>
 
 ## Philosophy
 
