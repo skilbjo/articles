@@ -83,7 +83,6 @@ data space allocation in main memory and file space in secondary storage, and fi
 locking during update.  When the process is terminated for any reason, all of these
 resources are re-claimed by the operating system.
 
-
 ### CTSS (Time sharing)
 
 > "Much of my work has come from being lazy. I didn't like writing programs, and
@@ -95,20 +94,24 @@ resources are re-claimed by the operating system.
 John Backus (creator of first high-level language- FORTRAN, Backus-Naur Form) said
 in the 1954 summer session at MIT that "By time-sharing, a big computer could be
 used as several small ones; there would need to be a reading station for each user".
-However, the computers (IBM 704, were not powerful enough to implement. In June
-1959, Christopher Strachey published a paper "Time Sharing in
-Large Fast Computers" at the UNESCO Information Processing Conference in Paris,
-where he envisaged a programmer debugging a program at a console (like a teletype)
-connected to the computer, while another program was running in the computer at
-the same time. Debugging programs was an important problem at that time, because
-with batch processing, it then often took a day from submitting a changed code,
-to getting the results. John McCarthy wrote a memo about that at MIT, after which
-a preliminary study committee and a working committee were established at MIT, to
-develop time-sharing. The committees envisaged many users using the computer at
-the same time, decided the details of implementing such system at MIT, and started
-the development of the system.
+However, the computers (IBM 704), were not powerful enough to implement such a system.
+In June 1959, Christopher Strachey published a paper "Time Sharing in Large Fast
+Computers" at the UNESCO Information Processing Conference in Paris, where he envisaged
+a programmer debugging a program at a console (like a teletype) connected to the
+computer, while another program was running in the computer at the same time. Debugging
+programs was an important problem at that time, because with batch processing, it
+then often took a day from submitting a changed code, to getting the results. John
+McCarthy wrote a memo about that at MIT, after which a preliminary study committee
+and a working committee were established at MIT, to develop time-sharing. The committees
+envisaged many users using the computer at the same time, decided the details of
+implementing such system at MIT, and started the development of the system.
+
+<img src='../lib/ibm704.jpg' width=900>
+
+- [https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m](https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m)
 
 ### Bell Labs
+
 The French government awarded Alexander Graham Bell $10,000 for the invention of the
 telephone; which Bell used to fund the Volta Laboratory. In 1925, the engineering
 department of the American Telephone & Telegraph company and Western Electric Laboratories
@@ -146,6 +149,150 @@ Pre history (tools for calculation, harnessing electric logic, processing one pr
 <img src='../lib/unix-history-simple.png' width=700>
 
 <img src='../lib/unix-history-super-simple.png' width=700>
+
+## The UNIX Time-Sharing System (Original Unix Paper, 1974)
+
+### Intro
+Key words and prases: time-sharing, operating system, file system, command
+language, PDP-11
+
+First version: assembly on a PDP-7
+Second version: assembly on a PDP-11/20
+Third version: C on a PDP-11/40 & /45
+
+<img src='../lib/pdp11.jpg' width=400>
+
+Since Feb 1971, 40 installations have been put into service. Unix can run on hardware
+costing as little as $40k ($210k in 2017).
+
+- hierarchical file system, incorporating demountable volumes
+- compatible file, device, and interprocess communication
+- ability to initial asynchronous processes
+- system command language selectable on a per-use basis
+- over 100 subsystems including a dozen languages
+
+Most "real" uses are the formatting of patent applications and other textual data,
+as well as collection and processing of data from switching machines (being AT&T Bell Labs),
+but Ken Thompson and Dennis Ritchie's use is manualy for research in operating
+systems, languages, computer networks, and other topics in computer science.
+
+The major programs available under UNIX are: assembler, text editor based on QED,
+linking loader, symbolic debugger, compiler for a language called C, an interpreter
+for BASIC, a text formatting program, a Fortran compiler, a Snobol interpreter,
+a top-down compiler (TMG), a bottom-u compiler (YACC), a form letter generator,
+a macro processor, and a permuted index program. (But wait there's more!) there
+is laos a host of maintenance, utility, recreation, and novelty programs.
+
+### Hardware and Software stack
+The PDP-11/45 is a 16-bit word computer with 144kb of core memory (RAM). UNIX kernel
+occupies 42K bytes at runtime. The system however includes a large number of device
+drivers and enjoys generous allotment of space of I/O buffers and system tables.
+
+The PDP-11/45 has 1mb of fixed-head disk, used for file system storage and memory
+swapping, and four moving-head disk drives which each proved 2.5mb. There is a
+console typewriter, a 14 variable-speed communication interface, a line printer,
+a Picturephone interface, a voice response unit, a voice synthesizer, a digital
+switching network, and a satellite PDP-11/20 which generates vectors, curves, and
+characters on a Tektronix 611 storage-tube display.
+
+The majority of the language is written in C language. Early versions were written
+in assembly language. The size of the new system is about 30% greater than the old
+system, however, the new system is not only much easier to understand and modify,
+but also includes multiprogramming and the ability to share reentrant code amongst
+serveral user programs.
+
+### File System
+The most important job of UNIX is to provide a file system.
+
+#### Ordinary files
+No particular structure. Files of text consist simply of string of characters, with
+lines demarcated by the new-line character. Binary programs are sequences of words
+as they will appear in core memory when the program starts executing.
+
+A few user programs manipulate files with more structure: the assembler generates
+and the loader expects an object file in a particular format. However the structure
+of files is controlled by the programs which use them, not by the system.
+
+#### Directories
+Directories provide the mapping between the names of files and the files themselves,
+and thus induce a structure on the file system as a whole.
+
+A directory behaves exactly like an ordinary except that it cannot be written on by
+unpriviledged programs, so that the system controls the contents of directories.
+The starting point for the file system is the root. A system directory contains
+all the programs privded for general use; that is, all the commands.
+
+Files are named by sequences of 14 or fewer characters. Directory names are seperated
+by slashes "/". A file may appear in serveral directories under possibly different
+names, a process called linking. A file does not exist within a particular directory;
+the directory entry for a file consists merely of its name and a pointer to the file.
+Thus, a file exists independently of any directory entry. A file will be made to
+disappear when the last link to it disappears.
+
+#### Special files
+Special files constitute the most unusual feature of the UNIX file system. Each
+I/O device supported by UNIX is associated with at least oone such file. Special
+files are read and written just like ordinary files, but requests to reach or write
+result in activation of the associated device. The special files reside in /dev.
+Special files exist for a communication line. There are three benefits to this
+I/O approach: file and device I/O are as similar as possible; file and device names
+have the same syntax and meaning, so a program expecting a file name as an argument
+can be passed as a device name; finally, special files are subject to the same
+protection as regular files.
+
+#### Protection
+- -rwxrwxr-- user group bytes date time filename
+- set-user-id bit.
+- the super-user is exempt from the usual constrains on file access
+
+#### I/O
+
+    filep = open(name, flag)
+    => returns file descriptor, to be used to identify subsequent calls to read/write
+
+Once a file is open (system interrupt), the following calls may be used:
+    n = read(filep, buffer, count)
+    n = write(filep, buffer, count)
+
+#### i-nodes
+
+#### Efficiency
+Timings were made of the assembly of a 7,621-line program. The assembly was run
+alone on the machine; total wall-clock time was 35.9 sec, for a rate of 212 lines per
+second. Time was deviced as fillows: 63.5% assembler execution time, 16.5% system
+overhead, 20% disk wait time. We are generally satisified with the overall performance
+of the system.
+
+### Processes
+An image is a computer execution environment-> a core image, general register values,
+status of open files, current directory, and the like. An image is a psuedo computer.
+
+A process is the execution of an image. While the processor is executing on behalf
+of a process, the image must reside in core; the process remains in core unless
+the appearance of an active, higher-priority process forces it to be swapped out
+to the fixed-head disk. The user-core part of an image is divided into three logical
+segments: the non-writable text segment begins at location 0 of virtual address space.
+At the first 8K byte boundary above the text segment begins the writable data segment.
+Starting at the highest address and growing down is the stack segment, which grows
+downward as the hardware's stack pointer fluctuates.
+
+    processid = fork(label)
+
+    filep = pipe()
+
+    execute(file, arg1, arg2, ..., argn)
+    execute(/usr/bin/ls,/dev)
+
+    exit(status)
+
+### The Shell
+Communication with UNIX is carried on with the aid of a program called the Shell.
+The Shell is a command line interpreter: it reads lines typed by the user and
+interpreters them as requests to execute other programs.
+
+File descriptors- 0, 1, 2
+    ls >there
+    ed <script
 
 ## Philosophy
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and
