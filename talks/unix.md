@@ -43,16 +43,6 @@ machine would be set to work until the program completed or crashed. Programs
 could generally be debugged via a control panel using dials, toggle switches and
 panel lights.
 
-Symbolic languages, assemblers, and compilers were developed for
-programmers to translate symbolic program-code into machine code that previously
-would have been hand-encoded. Later machines came with libraries of support code
-on punched cards or magnetic tape, which would be linked to the user's program
-to assist in operations such as input and output. This was the genesis of the
-modern-day operating system; however, machines still ran a single job at a time.
-At Cambridge University in England the job queue was at one time a washing line
-from which tapes were hung with different colored clothes-pegs to indicate
-job-priority.
-
 As machines became more powerful the time to run programs diminished, and the time
 to hand off the equipment to the next user became large by comparison. Accounting
 for and paying for machine usage moved on from checking the wall clock to automatic
@@ -76,6 +66,15 @@ spooling, runtime libraries, link-loading, and programs for sorting records in
 files.  These features were included or not included in application software at
 the option of application programmers, rather than in a separate operating system
 used by all applications.
+
+Symbolic languages, assemblers, and compilers were developed for programmers to
+translate symbolic program-code into machine code that previously would have been
+hand-encoded. Later machines came with libraries of support code on punched cards
+or magnetic tape, which would be linked to the user's program to assist in operations
+such as input and output. This was the genesis of the modern-day operating system;
+however, machines still ran a single job at a time.  At Cambridge University in
+England the job queue was at one time a washing line from which tapes were hung
+with different colored clothes-pegs to indicate job-priority.
 
 OS/360 (an IBM OS from the mid 60s) pioneered the concept that the operating system
 keeps track of all of the system resources that are used, including program and
@@ -241,18 +240,40 @@ can be passed as a device name; finally, special files are subject to the same
 protection as regular files.
 
 #### Protection
-- -rwxrwxr-- user group bytes date time filename
-- set-user-id bit.
-- the super-user is exempt from the usual constrains on file access
+A given for new files is a set of seven protection bits (note now it is 9, for
+including the group). Six independently specifcy read, write, and execute permission
+for the owner of the file and for all other users.
+
+    -rwxrwxr-- user group bytes date time filename
+
+The seventh bit is the set-user-id bit, or a way to give non-priviledged users access
+and permissions to programs that typically require root privileges (ie changing
+your own login password).
+
+The super-user is exempt from the usual constrains on file access
 
 #### I/O
+To open a file for writing or reading
 
     filep = open(name, flag)
     => returns file descriptor, to be used to identify subsequent calls to read/write
 
+There are no user-visible locks in the file system, nor are there restrictions on
+the number of users who may have a file open for reading or writing; so it is possible
+to have a file become scrambled when two users write on it simultaneously; however
+in practice, difficulties do not arise. We take the view that locaks are neither
+necessary nor sufficient, in our environment, to prevent interference between users
+of the same file.
+
 Once a file is open (system interrupt), the following calls may be used:
     n = read(filep, buffer, count)
     n = write(filep, buffer, count)
+
+To do random (direct access) I/O, it is only necessary to move the the read or write
+pointer to the appropriate location in the file:
+    location = seek(filep, base, offset)
+
+### Implementation of the File System
 
 #### i-nodes
 
@@ -293,6 +314,54 @@ interpreters them as requests to execute other programs.
 File descriptors- 0, 1, 2
     ls >there
     ed <script
+
+### Traps
+
+### Perspective
+
+### Statistics
+#### Overall
+- 72 user population
+- 14 maximum simultaneous users
+- 300 directories
+- 4,400 files
+- 34,000 512-byte secondary storage blocks useed
+
+#### CPU usage
+15.7% C compiler
+15.2% users’ programs
+11.7% editor
+5.8% Shell (used as a command, including command times)
+5.3% chess
+3.3% list directory
+3.1% document formatter
+1.6% backup dumper
+1.8% assembler
+(others - Fortran compiler, copy file, remove file, etc)
+
+#### Command Access
+15.3% editor
+9.6% list directory
+6.3% remove file
+6.3% C compiler
+6.0% concatenate/print file
+6.0% users’ programs
+3.3% list people logged on system
+3.2% rename/move file
+3.1% file status
+1.8% library maintainer
+1.8% document formatter
+1.6% execute another command conditionally
+(others - debugger, shell [used as a command], list processes executing)
+
+#### Reliability
+There has been loss of a file system (one disk out of five) caused by software
+inability to cope with a hardware problem causing repeated power fail traps. A
+"crash" is an unscheduled system reboot or halt. There is about one crash every
+other day; about two-thirds are caused by hardware-related difficulties such as
+power dips and inexplicable processor interrupts to random locations. The remainder
+are software failures. The longest uninterrupted up time was about two weeks.
+Total update time has bee nabout 98% of our 24hr / 365 day schedule.
 
 ## Philosophy
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and
