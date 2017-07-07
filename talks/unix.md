@@ -149,9 +149,63 @@ Pre history (tools for calculation, harnessing electric logic, processing one pr
 
 <img src='../lib/unix-history-super-simple.png' width=700>
 
+## Philosophy
+The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and
+philosophical approaches to minimalist, modular software development.  Unix developers
+were important in bringing the concepts of modularity and reusability into software
+engineering practice, spawning a "software tools" movement.
+
+### The Bell System Technical Journal (1978)
+> Make each program do one thing well. To do a new job, build afresh rather than
+> complicate old programs by adding new "features".
+
+> Expect the output of every program to become the input to another, as yet unknown,
+> program. Don't clutter output with extraneous information. Avoid stringently columnar
+> or binary input formats. Don't insist on interactive input.
+
+> Design and build software, even operating systems, to be tried early, ideally within
+> weeks. Don't hesitate to throw away the clumsy parts and rebuild them.
+
+> Use tools in preference to unskilled help to lighten a programming task, even if
+> you have to detour to build the tools and expect to throw some of them out after
+> you've finished using them.
+
+## Mike Gancarz (author of X windowing system): The UNIX Philosophy
+> Small is beautiful.
+> Make each program do one thing well.
+> Build a prototype as soon as possible.
+> Choose portability over efficiency.
+> Store data in flat text files.
+> Use software leverage to your advantage.
+> Use shell scripts to increase leverage and portability.
+> Avoid captive user interfaces.
+> Make every program a filter.
+
+## Ancient UNIX vs Research UNIX vs Commercial UNIX
+
+## Legacy
+### Plan 9
+Under development from the mid 80s til mid 90s, Plan 9 was the Bell Labs successor
+to UNIX, meant to clean up many of UNIX's loose threads, such as "everything is
+a file" and inter process communication.
+
+### Inferno
+Under computing threat from Sun, with the Java processor, Java OS, Java Virtual
+Machine (Write Once Run Anywhere), and Java language, Bell Labs discontinued Plan 9
+to start on a competing computing platform. Similar to Plan 9 but with two noteable
+features: a virtual machine called Dis, and a new programming language called
+Limbo.
+
+### Minix
+Microkernel. Slow to adapt new features. Meant as a teaching system. Strictly
+implements POSIX.
+
+### Linux
+Monolithic kernel. Fast to adapt new features.
+
 ## The UNIX Time-Sharing System (Original Unix Paper, 1974)
 
-### Intro
+### 1. Introduction
 Key words and prases: time-sharing, operating system, file system, command
 language, PDP-11
 
@@ -182,7 +236,7 @@ a top-down compiler (TMG), a bottom-u compiler (YACC), a form letter generator,
 a macro processor, and a permuted index program. (But wait there's more!) there
 is laos a host of maintenance, utility, recreation, and novelty programs.
 
-### Hardware and Software stack
+### 2. Hardware and Software Environment
 The PDP-11/45 is a 16-bit word computer with 144kb of core memory (RAM). UNIX kernel
 occupies 42K bytes at runtime. The system however includes a large number of device
 drivers and enjoys generous allotment of space of I/O buffers and system tables.
@@ -200,7 +254,7 @@ system, however, the new system is not only much easier to understand and modify
 but also includes multiprogramming and the ability to share reentrant code amongst
 serveral user programs.
 
-### File System
+### 3. The File System
 The most important job of UNIX is to provide a file system.
 
 #### Ordinary files
@@ -273,7 +327,7 @@ To do random (direct access) I/O, it is only necessary to move the the read or w
 pointer to the appropriate location in the file:
     location = seek(filep, base, offset)
 
-### Implementation of the File System
+### 4. Implementation of the File System
 
 #### i-nodes
 
@@ -284,7 +338,7 @@ second. Time was deviced as fillows: 63.5% assembler execution time, 16.5% syste
 overhead, 20% disk wait time. We are generally satisified with the overall performance
 of the system.
 
-### Processes
+### 5. Processes and Images
 An image is a computer execution environment-> a core image, general register values,
 status of open files, current directory, and the like. An image is a psuedo computer.
 
@@ -306,7 +360,7 @@ downward as the hardware's stack pointer fluctuates.
 
     exit(status)
 
-### The Shell
+### 6. The Shell
 Communication with UNIX is carried on with the aid of a program called the Shell.
 The Shell is a command line interpreter: it reads lines typed by the user and
 interpreters them as requests to execute other programs.
@@ -315,11 +369,57 @@ File descriptors- 0, 1, 2
     ls >there
     ed <script
 
-### Traps
+### 7. Traps
 
-### Perspective
+### 8. Perspective
+Perhaps paradoxically, the success of UNIX is largely due to the fact it was not
+designed to meet any predefinited objectives. The first version was written when
+Thompson, dissatisfied with the available computer facilities, discovered a little-
+used system PDP-7 and set out to create a more hospitable environment. This personal
+effort was sufficiently successful to gain the interest of Ritchie and others, and
+later to justify the acquisition of the PDP-11/20, specifically to support a text
+editing and formatting system. Our goals throughout the effort was always concerned
+with building a comfortable relationship with the machine and exploring ideas and
+inventions in operating systems. Three considerations which influenced the design
+of UNIX are visible in retrospect.
 
-### Statistics
+First, we naturally designed the system to make it easy to write, test, and run
+programs. The most important expression of our desire for programming convenience
+was that the system was arranged for interactive use, even though the original version
+only supported one user.
+
+Second, there have alwayse been severe size constrains on the system and its software.
+Given the partiality antagonistic desires for reasonable efficiency and expressive
+power, the size constraint has encouraged not only economy but a certain elegance
+of design. This may be a thinly designed version of "salvation thorugh suffering"
+philosophy.
+
+Third, the system was able to maintain itself. If designers of a system are forced
+to use that system, they quickly become aware of its functional and superficial
+deficiencies and are strongly motivated to correct them before it is too late.
+
+The process control scheme and command interface have proved both convenient and
+efficient. Since the Shell operates as an ordinary, swappable user program, it
+consumers no wired-down space in the system proper and it may be made as powerful
+as desired at listtle cost, in particular, given the framework in which the Shell
+executes as a process which spawns other processes to perform commands, the notions
+of I/O redirection, background processes, command files, and user-selectable system
+interfaces all become essentially trivial to implment.
+
+#### Influences
+The success of UNIX lies not so much in new inventions but rather in the full exploitation
+of a carefully selected set of fertile ideas, and especially in showing that they
+can be keys to the implementation of a small yet powerful operat- ing system.
+
+The fork operation, essentially as we implemented it, was present in the Berkeley
+time-sharing system [8]. On a number of points we were influenced by Multics, which
+suggested the particular form of the I/O system calls [9] and both the name of the
+Shell and its general functions, The notion that the Shell should create a process
+for each com- mand was also suggested to us by the early design of Mul- tics, although
+in that system it was later dropped for efficiency reasons.
+A similar scheme is used by TENEX [10].
+
+### 9. Statistics
 #### Overall
 - 72 user population
 - 14 maximum simultaneous users
@@ -363,59 +463,6 @@ power dips and inexplicable processor interrupts to random locations. The remain
 are software failures. The longest uninterrupted up time was about two weeks.
 Total update time has bee nabout 98% of our 24hr / 365 day schedule.
 
-## Philosophy
-The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and
-philosophical approaches to minimalist, modular software development.  Unix developers
-were important in bringing the concepts of modularity and reusability into software
-engineering practice, spawning a "software tools" movement.
-
-### The Bell System Technical Journal (1978)
-> Make each program do one thing well. To do a new job, build afresh rather than
-> complicate old programs by adding new "features".
-
-> Expect the output of every program to become the input to another, as yet unknown,
-> program. Don't clutter output with extraneous information. Avoid stringently columnar
-> or binary input formats. Don't insist on interactive input.
-
-> Design and build software, even operating systems, to be tried early, ideally within
-> weeks. Don't hesitate to throw away the clumsy parts and rebuild them.
-
-> Use tools in preference to unskilled help to lighten a programming task, even if
-> you have to detour to build the tools and expect to throw some of them out after
-> you've finished using them.
-
-## Mike Gancarz (author of X windowing system): The UNIX Philosophy
-> Small is beautiful.
-> Make each program do one thing well.
-> Build a prototype as soon as possible.
-> Choose portability over efficiency.
-> Store data in flat text files.
-> Use software leverage to your advantage.
-> Use shell scripts to increase leverage and portability.
-> Avoid captive user interfaces.
-> Make every program a filter.
-
-## Ancient UNIX vs Research UNIX vs Commercial UNIX
-
-## Legacy
-### Plan 9
-Under development from the mid 80s til mid 90s, Plan 9 was the Bell Labs successor
-to UNIX, meant to clean up many of UNIX's loose threads, such as "everything is
-a file" and inter process communication.
-
-### Inferno
-Under computing threat from Sun, with the Java processor, Java OS, Java Virtual
-Machine (Write Once Run Anywhere), and Java language, Bell Labs discontinued Plan 9
-to start on a competing computing platform. Similar to Plan 9 but with two noteable
-features: a virtual machine called Dis, and a new programming language called
-Limbo.
-
-### Minix
-Microkernel. Slow to adapt new features. Meant as a teaching system. Strictly
-implements POSIX.
-
-### Linux
-Monolithic kernel. Fast to adapt new features.
-
 ## References
 - https://www.youtube.com/watch?v=XvDZLjaCJuw
+- [The UNIX Time-Sharing System](link here)
