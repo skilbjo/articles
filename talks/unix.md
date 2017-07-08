@@ -434,30 +434,73 @@ files, and generally obliterates it.
 ### 6. The Shell
 Communication with UNIX is carried on with the aid of a program called the Shell.
 The Shell is a command line interpreter: it reads lines typed by the user and
-interpreters them as requests to execute other programs.
+interpreters them as requests to execute other programs. In the simplist form, a
+command consists of the command name followed by arguments to the command, seperated
+by spaces:
 
-File descriptors- 0, 1, 2
+    command arg1 arg2 ...argn
+
+A file with the name command is sought; if command is found, it is brought into
+core and executed. If command cannot be found, the Shell prefixes the string `/bin`
+to the command and attempts again to find the file. Director `/bin` contains all
+the commands intended to be generally used.
+
+Programs executed by the Shell start off with two open files which have file descriptors
+0 and 1. File 1 is open for writing and is best understood as the standard output
+file. This file is the user's typewriter. File 0 starts off open for reading, and
+programs which wish to read messages typed by the user usually read from this file.
+
     ls >there
+
+This command create a file called "there" and places the listing of directory files
+there.
+
     ed <script
+
+This command interprets "script" as a file of editor commands; thus `<script` means,
+"take input from 'script'". Although the file name following a < or > appears to
+be an argument to the command, it is in fact interpreted by the Shell and is not
+passed to the command at all; thus no special coding to handle I/O redirection is
+needed within each command.
 
     ls | pr -2 | opr
 
-Equivalent to:
+This is an extention of the standard I/O notion is used to direct output from one
+command to the input of another.
+
+This process could have been carried out more clumsily by:
 
     ls >tmp1
     pr -2 <tmp1 >tmp2
     opr <tmp2
     rm tmp1 tmp2
 
-Multitasking
+Another feature provided by the Shell is multitasking. Commands need not be on different
+lines; instead they may be interpreted by semicolons.
 
     ls; ed
+
     /usr/home/some-complex-script &
     mail Mary
+
+A related feature is more interesting. If a command is followed by "&", the Shell
+will not wait for the command to finish before prompting again; instead, it is ready
+immediately to accept a new command.
 
     source >output & ls >files &
 
     (date; ls) >x &
+
+The Shell is itself a command, and may be called recursively. Suppose a file called
+"tryout" contains the lines:
+
+    as source
+    mv a.out testprog
+    testprog
+
+    sh <tryout
+
+This would called the Shell `sh` to execute the commands sequentially.
 
 ### 7. Traps
 The PDP-11 hardware detects a number of program faults, such as references to
