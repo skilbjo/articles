@@ -43,16 +43,6 @@ machine would be set to work until the program completed or crashed. Programs
 could generally be debugged via a control panel using dials, toggle switches and
 panel lights.
 
-Symbolic languages, assemblers, and compilers were developed for
-programmers to translate symbolic program-code into machine code that previously
-would have been hand-encoded. Later machines came with libraries of support code
-on punched cards or magnetic tape, which would be linked to the user's program
-to assist in operations such as input and output. This was the genesis of the
-modern-day operating system; however, machines still ran a single job at a time.
-At Cambridge University in England the job queue was at one time a washing line
-from which tapes were hung with different colored clothes-pegs to indicate
-job-priority.
-
 As machines became more powerful the time to run programs diminished, and the time
 to hand off the equipment to the next user became large by comparison. Accounting
 for and paying for machine usage moved on from checking the wall clock to automatic
@@ -76,6 +66,15 @@ spooling, runtime libraries, link-loading, and programs for sorting records in
 files.  These features were included or not included in application software at
 the option of application programmers, rather than in a separate operating system
 used by all applications.
+
+Symbolic languages, assemblers, and compilers were developed for programmers to
+translate symbolic program-code into machine code that previously would have been
+hand-encoded. Later machines came with libraries of support code on punched cards
+or magnetic tape, which would be linked to the user's program to assist in operations
+such as input and output. This was the genesis of the modern-day operating system;
+however, machines still ran a single job at a time.  At Cambridge University in
+England the job queue was at one time a washing line from which tapes were hung
+with different colored clothes-pegs to indicate job-priority.
 
 OS/360 (an IBM OS from the mid 60s) pioneered the concept that the operating system
 keeps track of all of the system resources that are used, including program and
@@ -150,171 +149,6 @@ Pre history (tools for calculation, harnessing electric logic, processing one pr
 
 <img src='../lib/unix-history-super-simple.png' width=700>
 
-## The UNIX Time-Sharing System (Original Unix Paper, 1974)
-
-### Intro
-Key words and prases: time-sharing, operating system, file system, command
-language, PDP-11
-
-First version: assembly on a PDP-7
-Second version: assembly on a PDP-11/20
-Third version: C on a PDP-11/40 & /45
-
-<img src='../lib/pdp11.jpg' width=400>
-
-Since Feb 1971, 40 installations have been put into service. Unix can run on hardware
-costing as little as $40k ($210k in 2017).
-
-- hierarchical file system, incorporating demountable volumes
-- compatible file, device, and interprocess communication
-- ability to initial asynchronous processes
-- system command language selectable on a per-use basis
-- over 100 subsystems including a dozen languages
-
-Most "real" uses are the formatting of patent applications and other textual data,
-as well as collection and processing of data from switching machines (being AT&T Bell Labs),
-but Ken Thompson and Dennis Ritchie's use is manualy for research in operating
-systems, languages, computer networks, and other topics in computer science.
-
-The major programs available under UNIX are: assembler, text editor based on QED,
-linking loader, symbolic debugger, compiler for a language called C, an interpreter
-for BASIC, a text formatting program, a Fortran compiler, a Snobol interpreter,
-a top-down compiler (TMG), a bottom-u compiler (YACC), a form letter generator,
-a macro processor, and a permuted index program. (But wait there's more!) there
-is laos a host of maintenance, utility, recreation, and novelty programs.
-
-### Hardware and Software stack
-The PDP-11/45 is a 16-bit word computer with 144kb of core memory (RAM). UNIX kernel
-occupies 42K bytes at runtime. The system however includes a large number of device
-drivers and enjoys generous allotment of space of I/O buffers and system tables.
-
-The PDP-11/45 has 1mb of fixed-head disk, used for file system storage and memory
-swapping, and four moving-head disk drives which each proved 2.5mb. There is a
-console typewriter, a 14 variable-speed communication interface, a line printer,
-a Picturephone interface, a voice response unit, a voice synthesizer, a digital
-switching network, and a satellite PDP-11/20 which generates vectors, curves, and
-characters on a Tektronix 611 storage-tube display.
-
-The majority of the language is written in C language. Early versions were written
-in assembly language. The size of the new system is about 30% greater than the old
-system, however, the new system is not only much easier to understand and modify,
-but also includes multiprogramming and the ability to share reentrant code amongst
-serveral user programs.
-
-### File System
-The most important job of UNIX is to provide a file system.
-
-#### Ordinary files
-No particular structure. Files of text consist simply of string of characters, with
-lines demarcated by the new-line character. Binary programs are sequences of words
-as they will appear in core memory when the program starts executing.
-
-A few user programs manipulate files with more structure: the assembler generates
-and the loader expects an object file in a particular format. However the structure
-of files is controlled by the programs which use them, not by the system.
-
-#### Directories
-Directories provide the mapping between the names of files and the files themselves,
-and thus induce a structure on the file system as a whole.
-
-A directory behaves exactly like an ordinary except that it cannot be written on by
-unpriviledged programs, so that the system controls the contents of directories.
-The starting point for the file system is the root. A system directory contains
-all the programs privded for general use; that is, all the commands.
-
-Files are named by sequences of 14 or fewer characters. Directory names are seperated
-by slashes "/". A file may appear in serveral directories under possibly different
-names, a process called linking. A file does not exist within a particular directory;
-the directory entry for a file consists merely of its name and a pointer to the file.
-Thus, a file exists independently of any directory entry. A file will be made to
-disappear when the last link to it disappears.
-
-#### Special files
-Special files constitute the most unusual feature of the UNIX file system. Each
-I/O device supported by UNIX is associated with at least oone such file. Special
-files are read and written just like ordinary files, but requests to reach or write
-result in activation of the associated device. The special files reside in /dev.
-Special files exist for a communication line. There are three benefits to this
-I/O approach: file and device I/O are as similar as possible; file and device names
-have the same syntax and meaning, so a program expecting a file name as an argument
-can be passed as a device name; finally, special files are subject to the same
-protection as regular files.
-
-#### Protection
-- -rwxrwxr-- user group bytes date time filename
-- set-user-id bit.
-- the super-user is exempt from the usual constrains on file access
-
-#### I/O
-
-    filep = open(name, flag)
-    => returns file descriptor, to be used to identify subsequent calls to read/write
-
-Once a file is open (system interrupt), the following calls may be used:
-    n = read(filep, buffer, count)
-    n = write(filep, buffer, count)
-
-#### i-nodes
-
-#### Efficiency
-Timings were made of the assembly of a 7,621-line program. The assembly was run
-alone on the machine; total wall-clock time was 35.9 sec, for a rate of 212 lines per
-second. Time was deviced as fillows: 63.5% assembler execution time, 16.5% system
-overhead, 20% disk wait time. We are generally satisified with the overall performance
-of the system.
-
-### Processes
-An image is a computer execution environment-> a core image, general register values,
-status of open files, current directory, and the like. An image is a psuedo computer.
-
-A process is the execution of an image. While the processor is executing on behalf
-of a process, the image must reside in core; the process remains in core unless
-the appearance of an active, higher-priority process forces it to be swapped out
-to the fixed-head disk. The user-core part of an image is divided into three logical
-segments: the non-writable text segment begins at location 0 of virtual address space.
-At the first 8K byte boundary above the text segment begins the writable data segment.
-Starting at the highest address and growing down is the stack segment, which grows
-downward as the hardware's stack pointer fluctuates.
-
-    processid = fork(label)
-
-    filep = pipe()
-
-    execute(file, arg1, arg2, ..., argn)
-    execute(/usr/bin/ls,/dev)
-
-    exit(status)
-
-### The Shell
-Communication with UNIX is carried on with the aid of a program called the Shell.
-The Shell is a command line interpreter: it reads lines typed by the user and
-interpreters them as requests to execute other programs.
-
-File descriptors- 0, 1, 2
-    ls >there
-    ed <script
-
-    ls | pr -2 | opr
-
-Equivalent to:
-
-    ls >tmp1
-    pr -2 <tmp1 >tmp2
-    opr <tmp2
-    rm tmp1 tmp2
-
-Multitasking
-
-    ls; ed
-    /usr/home/some-complex-script &
-    mail Mary
-
-    source >output & ls >files &
-
-    (date; ls) >x &
-
-Traps
-
 ## Philosophy
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and
 philosophical approaches to minimalist, modular software development.  Unix developers
@@ -369,5 +203,285 @@ implements POSIX.
 ### Linux
 Monolithic kernel. Fast to adapt new features.
 
+## The UNIX Time-Sharing System (Original Unix Paper, 1974)
+
+### 1. Introduction
+Key words and prases: time-sharing, operating system, file system, command
+language, PDP-11
+
+First version: assembly on a PDP-7
+Second version: assembly on a PDP-11/20
+Third version: C on a PDP-11/40 & /45
+
+<img src='../lib/pdp11.jpg' width=400>
+
+Since Feb 1971, 40 installations have been put into service. Unix can run on hardware
+costing as little as $40k ($210k in 2017).
+
+- hierarchical file system, incorporating demountable volumes
+- compatible file, device, and interprocess communication
+- ability to initial asynchronous processes
+- system command language selectable on a per-use basis
+- over 100 subsystems including a dozen languages
+
+Most "real" uses are the formatting of patent applications and other textual data,
+as well as collection and processing of data from switching machines (being AT&T Bell Labs),
+but Ken Thompson and Dennis Ritchie's use is manualy for research in operating
+systems, languages, computer networks, and other topics in computer science.
+
+The major programs available under UNIX are: assembler, text editor based on QED,
+linking loader, symbolic debugger, compiler for a language called C, an interpreter
+for BASIC, a text formatting program, a Fortran compiler, a Snobol interpreter,
+a top-down compiler (TMG), a bottom-u compiler (YACC), a form letter generator,
+a macro processor, and a permuted index program. (But wait there's more!) there
+is laos a host of maintenance, utility, recreation, and novelty programs.
+
+### 2. Hardware and Software Environment
+The PDP-11/45 is a 16-bit word computer with 144kb of core memory (RAM). UNIX kernel
+occupies 42K bytes at runtime. The system however includes a large number of device
+drivers and enjoys generous allotment of space of I/O buffers and system tables.
+
+The PDP-11/45 has 1mb of fixed-head disk, used for file system storage and memory
+swapping, and four moving-head disk drives which each proved 2.5mb. There is a
+console typewriter, a 14 variable-speed communication interface, a line printer,
+a Picturephone interface, a voice response unit, a voice synthesizer, a digital
+switching network, and a satellite PDP-11/20 which generates vectors, curves, and
+characters on a Tektronix 611 storage-tube display.
+
+The majority of the language is written in C language. Early versions were written
+in assembly language. The size of the new system is about 30% greater than the old
+system, however, the new system is not only much easier to understand and modify,
+but also includes multiprogramming and the ability to share reentrant code amongst
+serveral user programs.
+
+### 3. The File System
+The most important job of UNIX is to provide a file system.
+
+#### Ordinary files
+No particular structure. Files of text consist simply of string of characters, with
+lines demarcated by the new-line character. Binary programs are sequences of words
+as they will appear in core memory when the program starts executing.
+
+A few user programs manipulate files with more structure: the assembler generates
+and the loader expects an object file in a particular format. However the structure
+of files is controlled by the programs which use them, not by the system.
+
+#### Directories
+Directories provide the mapping between the names of files and the files themselves,
+and thus induce a structure on the file system as a whole.
+
+A directory behaves exactly like an ordinary except that it cannot be written on by
+unpriviledged programs, so that the system controls the contents of directories.
+The starting point for the file system is the root. A system directory contains
+all the programs privded for general use; that is, all the commands.
+
+Files are named by sequences of 14 or fewer characters. Directory names are seperated
+by slashes "/". A file may appear in serveral directories under possibly different
+names, a process called linking. A file does not exist within a particular directory;
+the directory entry for a file consists merely of its name and a pointer to the file.
+Thus, a file exists independently of any directory entry. A file will be made to
+disappear when the last link to it disappears.
+
+#### Special files
+Special files constitute the most unusual feature of the UNIX file system. Each
+I/O device supported by UNIX is associated with at least oone such file. Special
+files are read and written just like ordinary files, but requests to reach or write
+result in activation of the associated device. The special files reside in /dev.
+Special files exist for a communication line. There are three benefits to this
+I/O approach: file and device I/O are as similar as possible; file and device names
+have the same syntax and meaning, so a program expecting a file name as an argument
+can be passed as a device name; finally, special files are subject to the same
+protection as regular files.
+
+#### Protection
+A given for new files is a set of seven protection bits (note now it is 9, for
+including the group). Six independently specifcy read, write, and execute permission
+for the owner of the file and for all other users.
+
+    -rwxrwxr-- user group bytes date time filename
+
+The seventh bit is the set-user-id bit, or a way to give non-priviledged users access
+and permissions to programs that typically require root privileges (ie changing
+your own login password).
+
+The super-user is exempt from the usual constrains on file access
+
+#### I/O
+To open a file for writing or reading
+
+    filep = open(name, flag)
+    => returns file descriptor, to be used to identify subsequent calls to read/write
+
+There are no user-visible locks in the file system, nor are there restrictions on
+the number of users who may have a file open for reading or writing; so it is possible
+to have a file become scrambled when two users write on it simultaneously; however
+in practice, difficulties do not arise. We take the view that locaks are neither
+necessary nor sufficient, in our environment, to prevent interference between users
+of the same file.
+
+Once a file is open (system interrupt), the following calls may be used:
+    n = read(filep, buffer, count)
+    n = write(filep, buffer, count)
+
+To do random (direct access) I/O, it is only necessary to move the the read or write
+pointer to the appropriate location in the file:
+    location = seek(filep, base, offset)
+
+### 4. Implementation of the File System
+
+#### i-nodes
+
+#### Efficiency
+Timings were made of the assembly of a 7,621-line program. The assembly was run
+alone on the machine; total wall-clock time was 35.9 sec, for a rate of 212 lines per
+second. Time was deviced as fillows: 63.5% assembler execution time, 16.5% system
+overhead, 20% disk wait time. We are generally satisified with the overall performance
+of the system.
+
+### 5. Processes and Images
+An image is a computer execution environment-> a core image, general register values,
+status of open files, current directory, and the like. An image is a psuedo computer.
+
+A process is the execution of an image. While the processor is executing on behalf
+of a process, the image must reside in core; the process remains in core unless
+the appearance of an active, higher-priority process forces it to be swapped out
+to the fixed-head disk. The user-core part of an image is divided into three logical
+segments: the non-writable text segment begins at location 0 of virtual address space.
+At the first 8K byte boundary above the text segment begins the writable data segment.
+Starting at the highest address and growing down is the stack segment, which grows
+downward as the hardware's stack pointer fluctuates.
+
+    processid = fork(label)
+
+    filep = pipe()
+
+    execute(file, arg1, arg2, ..., argn)
+    execute(/usr/bin/ls,/dev)
+
+    exit(status)
+
+### 6. The Shell
+Communication with UNIX is carried on with the aid of a program called the Shell.
+The Shell is a command line interpreter: it reads lines typed by the user and
+interpreters them as requests to execute other programs.
+
+File descriptors- 0, 1, 2
+    ls >there
+    ed <script
+
+    ls | pr -2 | opr
+
+Equivalent to:
+
+    ls >tmp1
+    pr -2 <tmp1 >tmp2
+    opr <tmp2
+    rm tmp1 tmp2
+
+Multitasking
+
+    ls; ed
+    /usr/home/some-complex-script &
+    mail Mary
+
+    source >output & ls >files &
+
+    (date; ls) >x &
+
+### 7. Traps
+
+### 8. Perspective
+Perhaps paradoxically, the success of UNIX is largely due to the fact it was not
+designed to meet any predefinited objectives. The first version was written when
+Thompson, dissatisfied with the available computer facilities, discovered a little-
+used system PDP-7 and set out to create a more hospitable environment. This personal
+effort was sufficiently successful to gain the interest of Ritchie and others, and
+later to justify the acquisition of the PDP-11/20, specifically to support a text
+editing and formatting system. Our goals throughout the effort was always concerned
+with building a comfortable relationship with the machine and exploring ideas and
+inventions in operating systems. Three considerations which influenced the design
+of UNIX are visible in retrospect.
+
+First, we naturally designed the system to make it easy to write, test, and run
+programs. The most important expression of our desire for programming convenience
+was that the system was arranged for interactive use, even though the original version
+only supported one user.
+
+Second, there have alwayse been severe size constrains on the system and its software.
+Given the partiality antagonistic desires for reasonable efficiency and expressive
+power, the size constraint has encouraged not only economy but a certain elegance
+of design. This may be a thinly designed version of "salvation thorugh suffering"
+philosophy.
+
+Third, the system was able to maintain itself. If designers of a system are forced
+to use that system, they quickly become aware of its functional and superficial
+deficiencies and are strongly motivated to correct them before it is too late.
+
+The process control scheme and command interface have proved both convenient and
+efficient. Since the Shell operates as an ordinary, swappable user program, it
+consumers no wired-down space in the system proper and it may be made as powerful
+as desired at listtle cost, in particular, given the framework in which the Shell
+executes as a process which spawns other processes to perform commands, the notions
+of I/O redirection, background processes, command files, and user-selectable system
+interfaces all become essentially trivial to implment.
+
+#### Influences
+The success of UNIX lies not so much in new inventions but rather in the full exploitation
+of a carefully selected set of fertile ideas, and especially in showing that they
+can be keys to the implementation of a small yet powerful operat- ing system.
+
+The fork operation, essentially as we implemented it, was present in the Berkeley
+time-sharing system [8]. On a number of points we were influenced by Multics, which
+suggested the particular form of the I/O system calls [9] and both the name of the
+Shell and its general functions, The notion that the Shell should create a process
+for each com- mand was also suggested to us by the early design of Mul- tics, although
+in that system it was later dropped for efficiency reasons.
+A similar scheme is used by TENEX [10].
+
+### 9. Statistics
+#### Overall
+- 72 user population
+- 14 maximum simultaneous users
+- 300 directories
+- 4,400 files
+- 34,000 512-byte secondary storage blocks useed
+
+#### CPU usage
+15.7% C compiler
+15.2% users’ programs
+11.7% editor
+5.8% Shell (used as a command, including command times)
+5.3% chess
+3.3% list directory
+3.1% document formatter
+1.6% backup dumper
+1.8% assembler
+(others - Fortran compiler, copy file, remove file, etc)
+
+#### Command Access
+15.3% editor
+9.6% list directory
+6.3% remove file
+6.3% C compiler
+6.0% concatenate/print file
+6.0% users’ programs
+3.3% list people logged on system
+3.2% rename/move file
+3.1% file status
+1.8% library maintainer
+1.8% document formatter
+1.6% execute another command conditionally
+(others - debugger, shell [used as a command], list processes executing)
+
+#### Reliability
+There has been loss of a file system (one disk out of five) caused by software
+inability to cope with a hardware problem causing repeated power fail traps. A
+"crash" is an unscheduled system reboot or halt. There is about one crash every
+other day; about two-thirds are caused by hardware-related difficulties such as
+power dips and inexplicable processor interrupts to random locations. The remainder
+are software failures. The longest uninterrupted up time was about two weeks.
+Total update time has bee nabout 98% of our 24hr / 365 day schedule.
+
 ## References
 - https://www.youtube.com/watch?v=XvDZLjaCJuw
+- [The UNIX Time-Sharing System](link here)
