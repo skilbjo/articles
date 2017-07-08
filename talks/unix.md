@@ -328,8 +328,57 @@ pointer to the appropriate location in the file:
     location = seek(filep, base, offset)
 
 ### 4. Implementation of the File System
+A directory entry contains only a name for the associated file and a pointer to
+the file itself. The pointer is an integer called the "i-number" (for index number)
+of the file. When the file is accessed, its i-number is used as an index into the
+system table (called the i-list). The entry thereby found (the file's i-node) contains
+the description of the file:
 
-#### i-nodes
+  - its owner
+  - its protection bits
+  - the physical disk or tape address for the file contents
+  - its size
+  - time of last modification
+  - the number of links to the file
+  - a bit indicating whether the file is a directory
+  - a bit indicating whether the file is a special files
+  - a bit indicating whether the file is "large" or "small"
+
+The purpose of the open or create system calls is to turn the path name given by
+the user into an i-number by searching the named directories; once the file is open,
+its device, i-number, and read/write pointer are stored in a system table indexed
+by the file descriptor returned by open or create.
+
+When a file is created, an i-node is allocated for it and a directory entry is made
+which contains the name of the file and its i-node number. Making a link involves
+created a directory entry with the new name, and copying the i-number from the orignal
+file entry, and incrementing the link-count field of the i-node. Removing a file
+is done by decrementing the link-count of the i-node specified by its directory
+entry and erasing the directory entry. If the link-count drops to 0, the disk
+blocks in the file are freed and the i-node is deallocated.
+
+To the user, both reading and writing of files appear to be synchronous and unbuffered.
+That is immediately after a return from a read call the data are available, and
+converseley after a write the user's workspace may be reused. In fact the system
+maintains a rather complicated buffring mechanism which reduces greatly the number
+of I/O operations required to access a file.
+
+UNIX will search its buffers to see where the disk block currently resides in core
+memory; if not, it will be read in from the device. A program that reads or writes
+in units of 512 bytes has an advantage over a program which reads or writes a single
+byte at a time, but the gain is not immense; it comes mainly from the avoidance of
+system overhead.
+
+The notion of the i-list is an unusual feature of UNIX. In practice, this method
+has proved quite reliable and easy to deal with. It permits a quite simple and rapid
+algorithm for checking the consistency of a file system, for example, from verification
+that hte portions of each device contains useful information and those free to be
+allocated are disjoin and together exhaust the space of the device. This algorithm
+is independent of the directory heirarchy, since it needs to only scan the linearly-
+organized i-list.
+
+A question arises of who is to be charged for the space of a file. The current
+version of UNIX avoids the issue by not charging any fees at all.
 
 #### Efficiency
 Timings were made of the assembly of a 7,621-line program. The assembly was run
