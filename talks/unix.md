@@ -25,9 +25,8 @@ its inception in the early 1990s. Android, the most widely used mobile operating
 system in the world, is in turn based on Linux.
 
 ## Name
-Munics -> Multiplexed Information and Computing Service)
-
-Unics -> UNiplexed Information and Computing Service)
+- Munics -> Multiplexed Information and Computing Service)
+- Unics -> UNiplexed Information and Computing Service)
 
 ## History and background
 
@@ -210,21 +209,19 @@ implements POSIX.
 ### Linux
 Monolithic kernel. Fast to adapt new features.
 
+## The UNIX Time-Sharing System (Original Unix Paper, 1974)
+
 <img src='../lib/pdp7.jpeg' width=900>
 
-<img src='../lib/pdp11.jpeg' width=900>
-
-## The UNIX Time-Sharing System (Original Unix Paper, 1974)
+<img src='../lib/pdp11.jpg' width=400>
 
 ### 1. Introduction
 Key words and prases: time-sharing, operating system, file system, command
 language, PDP-11
 
-First version: assembly on a PDP-7
-Second version: assembly on a PDP-11/20
-Third version: C on a PDP-11/40 & /45
-
-<img src='../lib/pdp11.jpg' width=400>
+- First version: assembly on a PDP-7
+- Second version: assembly on a PDP-11/20
+- Third version: C on a PDP-11/40 & /45
 
 Since Feb 1971, 40 installations have been put into service. Unix can run on hardware
 costing as little as $40k ($210k in 2017).
