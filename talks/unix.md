@@ -26,6 +26,7 @@ system in the world, is in turn based on Linux.
 
 ## Name
 Munics -> Multiplexed Information and Computing Service)
+
 Unics -> UNiplexed Information and Computing Service)
 
 ## History and background
@@ -105,8 +106,6 @@ and a working committee were established at MIT, to develop time-sharing. The co
 envisaged many users using the computer at the same time, decided the details of
 implementing such system at MIT, and started the development of the system.
 
-<img src='../lib/ibm704.jpg' width=900>
-
 - [https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m](https://www.youtube.com/watch?v=Q07PhW5sCEk#t=6m)
 
 ### Bell Labs
@@ -172,13 +171,21 @@ engineering practice, spawning a "software tools" movement.
 
 ## Mike Gancarz (author of X windowing system): The UNIX Philosophy
 > Small is beautiful.
+
 > Make each program do one thing well.
+
 > Build a prototype as soon as possible.
+
 > Choose portability over efficiency.
+
 > Store data in flat text files.
+
 > Use software leverage to your advantage.
+
 > Use shell scripts to increase leverage and portability.
+
 > Avoid captive user interfaces.
+
 > Make every program a filter.
 
 ## Ancient UNIX vs Research UNIX vs Commercial UNIX
@@ -202,6 +209,10 @@ implements POSIX.
 
 ### Linux
 Monolithic kernel. Fast to adapt new features.
+
+<img src='../lib/pdp7.jpeg' width=900>
+
+<img src='../lib/pdp11.jpeg' width=900>
 
 ## The UNIX Time-Sharing System (Original Unix Paper, 1974)
 
