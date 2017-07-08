@@ -294,6 +294,27 @@ File descriptors- 0, 1, 2
     ls >there
     ed <script
 
+    ls | pr -2 | opr
+
+Equivalent to:
+
+    ls >tmp1
+    pr -2 <tmp1 >tmp2
+    opr <tmp2
+    rm tmp1 tmp2
+
+Multitasking
+
+    ls; ed
+    /usr/home/some-complex-script &
+    mail Mary
+
+    source >output & ls >files &
+
+    (date; ls) >x &
+
+Traps
+
 ## Philosophy
 The Unix philosophy, originated by Ken Thompson, is a set of cultural norms and
 philosophical approaches to minimalist, modular software development.  Unix developers
