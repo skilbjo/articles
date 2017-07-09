@@ -8,6 +8,7 @@ Collection of articles I've gotten published or presented.
 
 ### Devops & deployment on a home data center
 [article](./odroid/deployment.md)
+Published by Odroid Magazine, March 2017 issue, page 20: [https://magazine.odroid.com/201703](https://magazine.odroid.com/201703)
 
 <img src='./lib/pdp7.jpeg' width=350>
 
