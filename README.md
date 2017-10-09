@@ -14,7 +14,6 @@ Collection of articles I've gotten published or presented.
 
 <img src='./lib/data_center.jpg' width=350>
 
-
 ### Clojure, the JVM, and AWS Lambda
 [article](./talks/clojure_aws_lambda.md)
 
