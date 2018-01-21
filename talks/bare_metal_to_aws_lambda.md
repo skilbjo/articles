@@ -82,10 +82,33 @@ ARM and x86 platforms. For any PR, Circle will check out the repo and use the
 those to quay.io.
 
 A `post-receive` git hook lives on target machines which checks out the code
-and places the `crontab` file in necessary directories (FreeBSD in `/var/cron/tabs`
-and Linux in `/etc/cron.d/`. Cron file has runtime information and also cleans
+and places the `crontab` file in necessary directories (FreeBSD in `/var/cron/tabs/`
+and Linux in `/etc/cron.d/`. Note: if you place in these directores, cron will
+poll the files every minute to see if it needs to execute; no need to edit user-
+specific crontab files. Cron file has runtime information and also cleans
 the docker cache (`docker images | xargs docker rmi`) for automated pulls from
 quay.io for new commits to master.
+
+The cron file:
+
+```bash
+## -- variables -----------------------------------
+  SHELL=/bin/bash
+  PATH=:/bin:/usr/bin:/usr/local/bin:/usr/sbin:/usr/local/sbin
+  MAILTO=john.skilbeck@gmail.com
+  cmd="deploy/bin/run-docker"
+  app_dir="/home/skilbjo/deploy/app/markets-etl"
+
+## -- jobs ----------------------------------------
+0 7 * * * skilbjo . /home/skilbjo/.profilelocal; cd "$app_dir" ; $cmd -m jobs.equities >/dev/null 2>&1
+0 6 * * * skilbjo . /home/skilbjo/.profilelocal; cd "$app_dir" ; $cmd -m jobs.currency >/dev/null 2>&1
+0 6 */4 * * skilbjo . /home/skilbjo/.profilelocal; cd "$app_dir" ; $cmd -m jobs.economics >/dev/null 2>&1
+0 6 */4 * * skilbjo . /home/skilbjo/.profilelocal; cd "$app_dir" ; $cmd -m jobs.interest-rates >/dev/null 2>&1
+0 6 */15 * * skilbjo . /home/skilbjo/.profilelocal; cd "$app_dir" ; $cmd -m jobs.real-estate >/dev/null 2>&1
+
+## -- clear the cache -----------------------------
+0 3 */20 */2 * skilbjo function _(){ docker images | awk '{print $3}' | grep -v IMAGE | xargs docker rmi --force;};_ >/dev/null
+```
 
 The entrypoint is the `bin/run-docker` script
 
@@ -189,6 +212,7 @@ So, to migrate from apartment to cloud, yet still free (AWS Lamba is 1M free
 requests per month), I started to investigate.
 
 AWS Lambda quick facts:
+
 - 2014 product launches
 - initially only node.js, max 1 minute runtime, no VPC support
 - mid-2015 java8, max 5 minute runtime
@@ -209,6 +233,7 @@ java \
 Script for turning a clojure project into a jar and uploading it:
 
 And a script for building the project and uploading it to AWS:
+
 ```bash
 #!/usr/bin/env bash
 set -eou pipefail
@@ -274,6 +299,12 @@ cli call from above: `--handler "jobs.aws-lambda"`
                    (json/read :key-fn keyword))]
     (main)))
 ```
+
+<img src='../lib/aws_lambda.png' width=800>
+
+<img src='../lib/cloudwatch.png' width=800>
+
+For scheduling, set a cloudwatch rule to call the entrypoint once a day.
 
 ```bash
 #!/usr/bin/env bash
@@ -359,15 +390,10 @@ copy_files && \
 
 <img src='../lib/lambda_env_vars.png' width=800>
 
-<img src='../lib/aws_lambda.png' width=800>
-
-<img src='../lib/cloudwatch.png' width=800>
-
-Set a cloudwatch rule to call the entrypoint once a day.
-
 ## Additional Follow Ups (another talk?)
-- RDS only free for 1 year. However, similar fashion, AWS Athena is database
-on demand using S3 and Presto (similar to Hadoop / Hive)- for SQL in text files.
+- RDS only free for 1 year. However, as AWS Lambda is to EC2, AWS Athena is to
+RDS databases, by using S3 and Presto (similar to Hadoop / Hive)- to create a SQL
+interface on text files.
 - AWS Athena pricing is $5 per terabyte scanned, with a minimum of 10mb. Equivalent
 pricing for small queries is $0.00005 per query, meaning price is $0.01 per
 2,000 queries. Equivalent RDS pricing (smallest instance: t1.micro: $150 / year).
@@ -375,7 +401,8 @@ pricing for small queries is $0.00005 per query, meaning price is $0.01 per
 - web server to use AWS Athena JDBC driver to get data
 
 ```bash
-@mbp:~ $ curl -s https://skilbjo-aws.duckdns.org/api/currency/latest | jq '.body[] | select(.currency == "GBP")'
+@mbp:~ $ curl -s https://skilbjo-aws.duckdns.org/api/currency/latest | \
+  jq '.body[] | select(.currency == "GBP")'
 {
   "date": "2018-01-17T00:00:00Z",
   "rate": "1.3798813819885",
