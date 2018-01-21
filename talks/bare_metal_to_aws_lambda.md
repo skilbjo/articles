@@ -208,7 +208,11 @@ java \
 
 Script for turning a clojure project into a jar and uploading it:
 
+And a script for building the project and uploading it to AWS:
 ```bash
+#!/usr/bin/env bash
+set -eou pipefail
+
 build() {
   deploy/build-project
 
@@ -224,13 +228,15 @@ new(){
     --region us-east-1 \
     --function-name "${app}" \
     --zip-file 'fileb://app.jar' \
-    --role arn:aws:iam::470340682667:role/lambda_with_athena \
+    --role arn:aws:iam::493240119367:role/lambda_with_athena \
     --handler "jobs.aws-lambda" \
     --runtime java8 \
     --profile default \
     --timeout 10 \
     --memory-size 360
 }
+
+new
 ```
 
 But, entrypoint is all off. What is the entrypoint? Unlike control of the cron
@@ -268,6 +274,90 @@ cli call from above: `--handler "jobs.aws-lambda"`
                    (json/read :key-fn keyword))]
     (main)))
 ```
+
+```bash
+#!/usr/bin/env bash
+set -eou pipefail
+
+copy_files(){
+  cleanup
+
+  cp "${src_dir}/project.clj"  "${app}/project.clj"
+  cp -r "${src_dir}/src"       "${app}/src"
+}
+
+add_aws_lambda_clj(){
+  cp "${app}/include/aws_lambda.clj" "${app}/src/jobs/aws_lambda.clj"
+}
+
+util_clj(){
+  sed -i '' -e '1,7d;' "${app}/src/markets_etl/util.clj"
+
+  local header='(ns markets-etl.util
+  (:require [clj-http.client :as http]
+            [clj-time.format :as formatter]
+            [clojure.string :as string])
+  (:import [com.amazonaws.services.kms AWSKMS AWSKMSClientBuilder]
+           [com.amazonaws.services.kms.model DecryptRequest]
+           [java.util Base64]
+           (java.nio ByteBuffer)
+           (java.nio.charset Charset)))'
+
+  echo "$header" | cat - "${app}/src/markets_etl/util.clj" >temp && \
+    mv temp "${app}/src/markets_etl/util.clj"
+
+  local decrypt='
+; -- aws -----------------------------------------------
+(defn decrypt [ciphertext]
+  (let [decoder (Base64/getDecoder)
+        decoded-text (.decode decoder ciphertext)
+        kms-client (AWSKMSClientBuilder/defaultClient)
+        decode-request (doto (DecryptRequest.)
+                         (.withCiphertextBlob (ByteBuffer/wrap decoded-text)))
+        decode-response (.decrypt kms-client decode-request)]
+    (.toString (.decode (Charset/forName "UTF-8") (.getPlaintext decode-response)))))'
+
+  echo "$decrypt" >>"${app}/src/markets_etl/util.clj"
+}
+
+project_clj(){
+  sed -i '' -e '1,3d;' "${app}/project.clj"
+
+  local header='(defproject markets-etl "0.1.0"
+  :uberjar-name "markets-etl.jar"
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [com.amazonaws/aws-lambda-java-core "1.0.0"]
+                 [com.amazonaws/aws-java-sdk-kms "1.11.98"]
+                 [amazonica "0.3.117" :exclusions [com.amazonaws/aws-java-sdk]]'
+
+  echo "$header" | cat - "${app}/project.clj" >temp && \
+    mv temp "${app}/project.clj"
+}
+
+src_files_clj(){
+  # wrap decrypt
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/jobs/currency.clj"
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/jobs/economics.clj"
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/jobs/equities.clj"
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/jobs/interest_rates.clj"
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/jobs/real_estate.clj"
+
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/markets_etl/api.clj"
+  sed -i '' 's/ env/ env util\/decrypt/g' "${app}/src/markets_etl/sql.clj"
+}
+
+add_lambda_wrappers(){
+  util_clj
+  project_clj
+  src_files_clj
+}
+
+copy_files && \
+  add_aws_lambda_clj
+  add_lambda_wrappers
+```
+
+<img src='../lib/lambda_env_vars.png' width=800>
 
 <img src='../lib/aws_lambda.png' width=800>
 
