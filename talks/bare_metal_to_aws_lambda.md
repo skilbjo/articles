@@ -269,9 +269,9 @@ cli call from above: `--handler "jobs.aws-lambda"`
     (main)))
 ```
 
-<img src='../lib/aws_lambda.png' width=400>
+<img src='../lib/aws_lambda.png' width=800>
 
-<img src='../lib/cloudwatch.png' width=400>
+<img src='../lib/cloudwatch.png' width=800>
 
 Set a cloudwatch rule to call the entrypoint once a day.
 
