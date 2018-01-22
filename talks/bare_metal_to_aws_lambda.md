@@ -286,7 +286,7 @@ cli call from above: `--handler "jobs.aws-lambda"`
   (let [_              (println "Starting jobs... ")
 
         currency       (currency/-main)
-        econmics       (economics/-main)
+        economics      (economics/-main)
         equities       (equities/-main)
         interest-rates (interest-rates/-main)
         real-estate    (real-estate/-main)
