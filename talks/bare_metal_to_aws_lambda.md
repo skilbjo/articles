@@ -421,6 +421,8 @@ entrypoints.
     (main)))
 ```
 
+<img src='../lib/cloudwatch_logs.png' width=800>
+
 Script for doing various changes to the AWS environment:
 - include orchestration main (`aws_lambda.clj`)
 - include a few AWS java libraries (to take in a lambda stream)
