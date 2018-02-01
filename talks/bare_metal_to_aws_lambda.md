@@ -110,7 +110,7 @@ A sample job:
 The result:
 
 ```
-@C02NN3NBG3QT:~ $ psql $aws_db_uri -c 'select * from dw.currency limit 5'
+@C02NN3NBG3QT:~ $ psql $db_uri -c 'select * from dw.currency limit 5'
 
  dataset | ticker | currency |    date    |       rate       |     high_est     |     low_est
 ---------+--------+----------+------------+------------------+------------------+------------------
