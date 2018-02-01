@@ -1,6 +1,6 @@
 # converting a clojure project to aws lambda runtime
 
-### Background
+## Background
 
 <img src='../lib/accountant.png' width=400>
 
@@ -12,7 +12,9 @@ Best $50 investment I've made in my career
 
 <img src='../lib/funding_circle.png' width=400>
 
-Funding Circle hired me as an engineer in June 2016.
+Funding Circle hired me as an engineer in June 2016. Get in contact with us at
+<https://www.fundingcircle.com/us/about/careers/>, <techrecruit@fundingcircle.com>
+or <john.skilbeck@fundingcircle.com>
 
 <img src='../lib/clojure.png' width=400>
 
@@ -33,8 +35,10 @@ Quandl has this data available in an API, so wrote a Clojure wrapper around that
 and began importing that data onto a small postgres server on a raspberry pi on
 my own network in my apartment.
 
-However, none of the fancy distributed systems technologies (Apache Mesos) we
-have at work.
+However, in my apartment, I don't have the fancy distributed systems technologies
+(Apache Mesos) we have at work.
+
+### source code, project layout
 
 ```bash
 @mbp:markets-etl $ tree -I 'test|dev-resources|deploy'
@@ -58,6 +62,52 @@ have at work.
 in `src/`, `jobs/` which are the business logic, and `markets_etl/` which act
 as internal libraries for the project, such as an api wrapper, a sql
 wrapper, and shared utility functions
+
+A sample job:
+
+```clojure
+(ns jobs.currency
+  (:require [clojure.java.jdbc :as jdbc]
+            [markets-etl.api :as api]
+            [markets-etl.sql :as sql]
+            [markets-etl.util :as util])
+  (:gen-class))
+
+(def datasets
+  '({:dataset "CURRFX"
+     :ticker ["EURUSD" "GBPUSD"]}))
+
+(def query-params
+  {:limit      20
+   :start_date util/last-week
+   :end_date   util/now})
+
+(defn execute! [cxn data]
+  (jdbc/with-db-transaction [txn cxn]
+    (->> data
+         (map prepare-row)
+         flatten
+         (map #(update-or-insert! txn %))
+         doall)))
+
+(defn -main [& args]
+  (jdbc/with-db-connection [cxn (-> :jdbc-db-uri env)]
+    (let [get-data (fn [{:keys [dataset
+                                ticker]}]
+                     (->> ticker
+                          (map (fn [tkr]
+                                 (-> (api/query-quandl! dataset
+                                                        tkr
+                                                        query-params)
+                                     (assoc :dataset dataset :ticker tkr))))))
+          data        (->> datasets
+                           (map get-data)
+                           flatten)]
+
+      (execute! cxn data)))
+```
+
+### deployment strategy
 
 ```bash
 @mbp:markets-etl $ tree deploy/
@@ -155,50 +205,6 @@ set -e
 exec $cmd $@
 ```
 
-A sample job:
-
-```clojure
-(ns jobs.currency
-  (:require [clojure.java.jdbc :as jdbc]
-            [markets-etl.api :as api]
-            [markets-etl.sql :as sql]
-            [markets-etl.util :as util])
-  (:gen-class))
-
-(def datasets
-  '({:dataset "CURRFX"
-     :ticker ["EURUSD" "GBPUSD"]}))
-
-(def query-params
-  {:limit      20
-   :start_date util/last-week
-   :end_date   util/now})
-
-(defn execute! [cxn data]
-  (jdbc/with-db-transaction [txn cxn]
-    (->> data
-         (map prepare-row)
-         flatten
-         (map #(update-or-insert! txn %))
-         doall)))
-
-(defn -main [& args]
-  (jdbc/with-db-connection [cxn (-> :jdbc-db-uri env)]
-    (let [get-data (fn [{:keys [dataset
-                                ticker]}]
-                     (->> ticker
-                          (map (fn [tkr]
-                                 (-> (api/query-quandl! dataset
-                                                        tkr
-                                                        query-params)
-                                     (assoc :dataset dataset :ticker tkr))))))
-          data        (->> datasets
-                           (map get-data)
-                           flatten)]
-
-      (execute! cxn data)))
-```
-
 ## aws lambda
 
 EC2 containers, virtualized computers. But what about when you only need it now
@@ -221,7 +227,7 @@ AWS Lambda quick facts:
 - openjdk 1.8
 - no control of startup flags, last two flags make startups less painful
 
-```
+```bash
 java \
   -XX:MaxHeapSize=85% of configured Lambda memory \
   -XX:UseSerialGC \                   # overriding default garbage collector with Serial GC
@@ -229,6 +235,8 @@ java \
   -Xshare:on \                        # Class data sharing,
   -jar app.jar
 ```
+
+### turn a project meant for a metal runtime to an aws runtime
 
 Script for turning a clojure project into a jar and uploading it:
 
@@ -414,3 +422,19 @@ pricing for small queries is $0.00005 per query, meaning price is $0.01 per
   "s3uploaddate": "2018-01-20T08:00:00Z"
 }
 ```
+
+### Conclusion / Questions?
+
+```
+@C02NN3NBG3QT:~ $ cowsay Thanks🍺 for learning about Clojure and AWS Lambda with me! 🎉🎉🎉🎉🎉🎉🎉🎉🎉
+ _______________________________________
+/ Thanks🍺 for learning about Clojure \
+| and AWS Lambda with me!               |
+\ 🎉🎉🎉🎉🎉🎉🎉🎉🎉                  /
+ ---------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+@C02NN3NBG3QT:~ $
