@@ -107,6 +107,20 @@ A sample job:
       (execute! cxn data)))
 ```
 
+The result:
+
+```
+ dataset | ticker | currency |    date    |       rate       |     high_est     |     low_est
+---------+--------+----------+------------+------------------+------------------+------------------
+ CURRFX  | EURUSD | EUR      | 2017-09-24 | 1.19271969795230 | 1.19388735294340 | 1.18518519401550
+ CURRFX  | EURUSD | EUR      | 2017-10-03 | 1.17475688457490 | 1.17867541313170 | 1.17474305629730
+ CURRFX  | EURUSD | EUR      | 2017-09-17 | 1.19371628761290 | 1.19688808918000 | 1.19168210029600
+ CURRFX  | GBPUSD | GBP      | 2017-09-24 | 1.35073077678680 | 1.35701787471770 | 1.34634804725650
+ CURRFX  | GBPUSD | GBP      | 2017-09-17 | 1.35751521587370 | 1.36156308650970 | 1.34825396537780
+(5 rows)
+
+```
+
 ### deployment strategy
 
 ```bash
@@ -130,6 +144,112 @@ CI & deploy strategy is with CircleCI / quay.io / Docker / bare metal on both
 ARM and x86 platforms. For any PR, Circle will check out the repo and use the
 `publish-image` script to create an x86 and ARM docker container and publish
 those to quay.io.
+
+`circle.yml`:
+```
+machine:
+  services:
+    - docker
+    - postgresql
+
+test:
+  override:
+    - case $CIRCLE_NODE_INDEX in 0) lein cljfmt check ;; 1) lein test ;; esac:
+        parallel: true
+
+deployment:
+  quay:
+    branch: /.*/
+    commands:
+      - deploy/bin/publish-image
+```
+
+`deploy/bin/publish-image`:
+```bash
+#!/usr/bin/env bash
+set -eou pipefail
+
+publish_x86() {
+  if [[ -f Dockerfile ]]; then rm Dockerfile; fi
+  if [[ -d target     ]]; then rm -rf target; fi
+
+  cat deploy/default/publish-image | \
+    sed "s/tag='latest'/tag='x86'/g" | \
+    sed 's/$image:$CIRCLE_SHA1/$image:$CIRCLE_SHA1-x86/g' | \
+    sed 's/tag="${CIRCLE_BRANCH}_${CIRCLE_BUILD_NUM}"/tag="${CIRCLE_BRANCH}_${CIRCLE_BUILD_NUM}_x86"/g' \
+    >>deploy/bin/publish-x86
+
+  chmod u+x deploy/bin/publish-x86 && \
+    deploy/bin/publish-x86
+}
+
+publish_arm() {
+  if [[ -f Dockerfile ]]; then rm Dockerfile; fi
+  if [[ -d target     ]]; then rm -rf target; fi
+
+  cat deploy/default/publish-image | \
+    sed "s/cat '.\/deploy\/default\/Dockerfile'/cat '.\/deploy\/default\/Dockerfile.arm'/g" | \
+    sed "s/tag='latest'/tag='arm'/g" | \
+    sed 's/$image:$CIRCLE_SHA1/$image:$CIRCLE_SHA1-arm/g' | \
+    sed 's/tag="${CIRCLE_BRANCH}_${CIRCLE_BUILD_NUM}"/tag="${CIRCLE_BRANCH}_${CIRCLE_BUILD_NUM}_arm"/g' \
+    >>deploy/bin/publish-arm
+
+  chmod u+x deploy/bin/publish-arm && \
+    deploy/bin/publish-arm
+}
+
+publish_arm && \
+  publish_x86
+```
+
+`deploy/default/publish-image`:
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+app=$(basename $(pwd))
+registry='quay.io'
+image="${registry}/skilbjo/${app}"
+email='skilbjo@github.com'
+
+cat './deploy/default/Dockerfile' >Dockerfile
+
+if [[ $CIRCLE_BRANCH == master ]]; then
+  tag='latest'
+else
+  tag="${CIRCLE_BRANCH}_${CIRCLE_BUILD_NUM}"
+fi
+
+echo $(git rev-parse HEAD) >.tag
+
+docker login -u $QUAY_ROBOT_USERNAME -p $QUAY_ROBOT_PASSWORD -e $email $registry
+lein uberjar
+docker build --rm -t $image:$tag .
+docker tag $image:$tag $image:$CIRCLE_SHA1
+docker push $image
+```
+`deploy/default/post-receive`:
+```bash
+#!/usr/bin/env bash
+set -eou pipefail
+
+user=$(whoami)
+dir="/home/${user}/deploy/app"
+app=$(basename $(pwd) | sed -e 's/.git//')
+deploy_dir="$dir/$app"
+
+GIT_WORK_TREE="$deploy_dir" git checkout -f
+
+mkdir -p "$deploy_dir" && cd "$deploy_dir"
+
+## build steps here ##
+case $(uname) in
+  (Linux)
+    sudo cp deploy/tasks/crontab "/etc/cron.d/$app" ;;
+  (FreeBSD)
+    sudo cp deploy/tasks/crontab "/var/cron/tabs/$app" ;;
+esac
+```
 
 A `post-receive` git hook lives on target machines which checks out the code
 and places the `crontab` file in necessary directories (FreeBSD in `/var/cron/tabs/`
@@ -228,55 +348,46 @@ AWS Lambda quick facts:
 - no control of startup flags, last two flags make startups less painful
 
 ```bash
-java \
-  -XX:MaxHeapSize=85% of configured Lambda memory \
-  -XX:UseSerialGC \                   # overriding default garbage collector with Serial GC
-  -XX:+TieredCompilation \
-  -Xshare:on \                        # Class data sharing,
-  -jar app.jar
+java -XX:MaxHeapSize=85% of configured Lambda memory \
+     -XX:UseSerialGC \         # overriding default garbage collector with Serial GC
+     -XX:+TieredCompilation \
+     -Xshare:on \              # Class data sharing
+     -jar app.jar
 ```
 
 ### turn a project meant for a metal runtime to an aws runtime
 
-Script for turning a clojure project into a jar and uploading it:
-
-And a script for building the project and uploading it to AWS:
+No more control of the main it calls. From this:
 
 ```bash
-#!/usr/bin/env bash
-set -eou pipefail
-
-build() {
-  deploy/build-project
-
-  lein uberjar && \
-    cp "target/uberjar/${app}.jar" app.jar
-}
-
-new(){
-  build
-
-  aws --profile personal \
-    lambda create-function \
-    --region us-east-1 \
-    --function-name "${app}" \
-    --zip-file 'fileb://app.jar' \
-    --role arn:aws:iam::493240119367:role/lambda_with_athena \
-    --handler "jobs.aws-lambda" \
-    --runtime java8 \
-    --profile default \
-    --timeout 10 \
-    --memory-size 360
-}
-
-new
+java -Xms256m \
+     -Xmx512m \
+     -XX:MaxMetaspaceSize=128m \
+     -server \
+     -Duser.timezone=PST8PDT \
+     -jar app.jar \
+     -m jobs.currency
 ```
 
-But, entrypoint is all off. What is the entrypoint? Unlike control of the cron
+```bash
+java -XX:MaxHeapSize=85% of configured Lambda memory \
+     -XX:UseSerialGC \         # overriding default garbage collector with Serial GC
+     -XX:+TieredCompilation \
+     -Xshare:on \              # Class data sharing
+     -jar app.jar
+```
+
+So, entrypoint is all off. What is the entrypoint? Unlike control of the cron
 script, which calls `java -jar /app.jar -m jobs.currency`, there is no control.
 Give up?
+
 Actually, you tell AWS Lambda what the entrypoint is. Note this flag in the aws
 cli call from above: `--handler "jobs.aws-lambda"`
+
+<img src='../lib/aws_lambda.png' width=800>
+
+Then create a clojure entrypoint that wraps the orchestration of the other
+entrypoints.
 
 ```clojure
 (ns jobs.aws-lambda
@@ -308,11 +419,10 @@ cli call from above: `--handler "jobs.aws-lambda"`
     (main)))
 ```
 
-<img src='../lib/aws_lambda.png' width=800>
-
-<img src='../lib/cloudwatch.png' width=800>
-
-For scheduling, set a cloudwatch rule to call the entrypoint once a day.
+Script for doing various changes to the AWS environment:
+- include orchestration main (`aws_lambda.clj`)
+- include a few AWS java libraries (to take in a lambda stream)
+- change environment variables to use AWS KMS (so no secrets in plaintext)
 
 ```bash
 #!/usr/bin/env bash
@@ -396,7 +506,42 @@ copy_files && \
   add_lambda_wrappers
 ```
 
+And a script for building the project and uploading it to AWS:
+
+```bash
+#!/usr/bin/env bash
+set -eou pipefail
+
+build() {
+  deploy/build-project
+
+  lein uberjar && \
+    cp "target/uberjar/${app}.jar" app.jar
+}
+
+new(){
+  build
+
+  aws --profile personal \
+    lambda create-function \
+    --region us-east-1 \
+    --function-name "${app}" \
+    --zip-file 'fileb://app.jar' \
+    --role arn:aws:iam::493240119367:role/lambda_with_athena \
+    --handler "jobs.aws-lambda" \
+    --runtime java8 \
+    --profile default \
+    --timeout 10 \
+    --memory-size 360
+}
+
+new
+```
+
 <img src='../lib/lambda_env_vars.png' width=800>
+
+For scheduling, set a cloudwatch rule to call the entrypoint once a day.
+<img src='../lib/cloudwatch.png' width=800>
 
 ## Additional Follow Ups (another talk?)
 - RDS only free for 1 year. However, as AWS Lambda is to EC2, AWS Athena is to
@@ -426,7 +571,6 @@ pricing for small queries is $0.00005 per query, meaning price is $0.01 per
 ### Conclusion / Questions?
 
 ```
-@C02NN3NBG3QT:~ $ cowsay Thanks🍺 for learning about Clojure and AWS Lambda with me! 🎉🎉🎉🎉🎉🎉🎉🎉🎉
  _______________________________________
 / Thanks🍺 for learning about Clojure \
 | and AWS Lambda with me!               |
