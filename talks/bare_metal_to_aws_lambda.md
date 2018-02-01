@@ -110,6 +110,8 @@ A sample job:
 The result:
 
 ```
+@C02NN3NBG3QT:~ $ psql $aws_db_uri -c 'select * from dw.currency limit 5'
+
  dataset | ticker | currency |    date    |       rate       |     high_est     |     low_est
 ---------+--------+----------+------------+------------------+------------------+------------------
  CURRFX  | EURUSD | EUR      | 2017-09-24 | 1.19271969795230 | 1.19388735294340 | 1.18518519401550
