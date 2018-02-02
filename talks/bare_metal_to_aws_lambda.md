@@ -1,14 +1,5 @@
 # converting a clojure project to aws lambda runtime
 
-<img src='../lib/how_i_figured_this_out.jpg' width=900>
-
-
-
-
-
-
-
-
 ## Background
 
 <img src='../lib/accountant.png' width=400>
