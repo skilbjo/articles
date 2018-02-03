@@ -105,6 +105,10 @@ Uses features in the Linux kernel (libcontainer, cgroups, and kernel namespaces)
 {Note: this is also why, in order to use Docker on macOS, you need to install
 a Linux VM such as boot2docker or others}
 
+#### FreeBSD capscium
+
+#### OpenBSD pledge()
+
 ```
 @C02NN3NBG3QT:talks $ uname -a
 Darwin C02NN3NBG3QT 16.7.0 Darwin Kernel Version 16.7.0: Thu Jun 15 17:36:27 PDT 2017; root:xnu-3789.70.16~2/RELEASE_X86_64 x86_64
