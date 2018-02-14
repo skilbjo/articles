@@ -1,6 +1,10 @@
 # free-bsd jails
 
 ## BSD
+<img src='../lib/unix-history-simple.png' width=700 />
+
+See more in my talk about [Unix](./unix.md).
+
 Berkeley Software Distribution, Berkeley Unix, or BSD, is a Unix-like operating
 system, probably the closest surviving relative of original UNIX. It shared the
 initial codebase and design with the original AT&T Unix operating system.
@@ -23,9 +27,7 @@ kernel, such as Debian GNU/kNetBSD on top of the NetBSD kernel, or Orbis OS
 Note: Apple's iOS and macOS along with the Darwin kernel include a large amount
 of code derived from FreeBSD.
 
-<img src='../lib/unix-history-simple.png' width=700>
-
-See more in my talk about [Unix](./unix.md).
+<img src='../lib/freebsd.jpg' width=700 />
 
 ## Jails
 ### Why?
@@ -74,6 +76,80 @@ DESCRIPTION
 Why virtualize? Primarily, so the app will run, damnit. "Write once, run anywhere"
 concept. As long as the developer packages the app initially in a virtualization
 software, the contract is the app will work.
+
+
+## jails demo
+
+```bash
+Last login: Mon Feb 12 01:03:32 2018 from 10.8.0.10
+FreeBSD 11.1-RELEASE-p1 (GENERIC) #0: Wed Aug  9 11:55:48 UTC 2017
+
+Welcome to FreeBSD!
+
+Release Notes, Errata: https://www.FreeBSD.org/releases/
+Security Advisories:   https://www.FreeBSD.org/security/
+FreeBSD Handbook:      https://www.FreeBSD.org/handbook/
+FreeBSD FAQ:           https://www.FreeBSD.org/faq/
+Questions List: https://lists.FreeBSD.org/mailman/listinfo/freebsd-questions/
+FreeBSD Forums:        https://forums.FreeBSD.org/
+
+Documents installed with the system are in the /usr/local/share/doc/freebsd/
+directory, or can be installed later with:  pkg install en-freebsd-doc
+For other languages, replace "en" with a language code like de or fr.
+
+Show the version of FreeBSD installed:  freebsd-version ; uname -a
+Please include that output and any error messages when posting questions.
+Introduction to manual pages:  man man
+FreeBSD directory layout:      man hier
+
+Edit /etc/motd to change this login announcement.
+
+ * keychain 2.8.3 ~ http://www.funtoo.org
+ * Found existing ssh-agent: 924
+ * Known ssh key: /home/skilbjo/.ssh/id_rsa
+
+By pressing "Scroll Lock" you can use the arrow keys to scroll backward
+through the console output.  Press "Scroll Lock" again to turn it off.
+@udoo:~ $ which ezjail
+@udoo:~ $ cd /usr/ports/sysutils/ezjail/
+@udoo:ezjail $ make install clean
+===>   ezjail-3.4.2 depends on file: /usr/local/sbin/pkg - found
+=> ezjail-3.4.2.tar.bz2 doesn't seem to exist in /usr/ports/distfiles/.
+=> Attempting to fetch http://erdgeist.org/arts/software/ezjail/ezjail-3.4.2.tar.bz2
+ezjail-3.4.2.tar.bz2                          100% of   37 kB  110 kBps 00m01s
+===> Fetching all distfiles required by ezjail-3.4.2 for building
+===>  Extracting for ezjail-3.4.2
+=> SHA256 Checksum OK for ezjail-3.4.2.tar.bz2.
+===>  Patching for ezjail-3.4.2
+===>  Configuring for ezjail-3.4.2
+===>  Building for ezjail-3.4.2
+===>  Staging for ezjail-3.4.2
+===>   Generating temporary packing list
+mkdir -p /usr/ports/sysutils/ezjail/work/stage/usr/local/etc/ezjail/ /usr/ports/sysutils/ezjail/work/stage/usr/local/man/man5/ /usr/ports/sysutils/ezjail/work/stage/usr/local/man/man7 /usr/ports/sysutils/ezjail/work/stage/usr/local/man/man8 /usr/ports/sysutils/ezjail/work/stage/usr/local/etc/rc.d/ /usr/ports/sysutils/ezjail/work/stage/usr/local/bin/ /usr/ports/sysutils/ezjail/work/stage/usr/local/share/examples/ezjail /usr/ports/sysutils/ezjail/work/stage/usr/local/share/zsh/site-functions
+cp -R examples/example /usr/ports/sysutils/ezjail/work/stage/usr/local/share/examples/ezjail/
+cp -R examples/nullmailer-example /usr/ports/sysutils/ezjail/work/stage/usr/local/share/examples/ezjail/
+cp -R share/zsh/site-functions/ /usr/ports/sysutils/ezjail/work/stage/usr/local/share/zsh/site-functions/
+sed s:EZJAIL_PREFIX:/usr/local: ezjail.conf.sample > /usr/ports/sysutils/ezjail/work/stage/usr/local/etc/ezjail.conf.sample
+sed s:EZJAIL_PREFIX:/usr/local: ezjail.sh > /usr/ports/sysutils/ezjail/work/stage/usr/local/etc/rc.d/ezjail
+sed s:EZJAIL_PREFIX:/usr/local: ezjail-admin > /usr/ports/sysutils/ezjail/work/stage/usr/local/bin/ezjail-admin
+sed s:EZJAIL_PREFIX:/usr/local: man8/ezjail-admin.8 > /usr/ports/sysutils/ezjail/work/stage/usr/local/man/man8/ezjail-admin.8
+sed s:EZJAIL_PREFIX:/usr/local: man5/ezjail.conf.5 > /usr/ports/sysutils/ezjail/work/stage/usr/local/man/man5/ezjail.conf.5
+sed s:EZJAIL_PREFIX:/usr/local: man7/ezjail.7 > /usr/ports/sysutils/ezjail/work/stage/usr/local/man/man7/ezjail.7
+chmod 755 /usr/ports/sysutils/ezjail/work/stage/usr/local/etc/rc.d/ezjail /usr/ports/sysutils/ezjail/work/stage/usr/local/bin/ezjail-admin
+chmod 0440 /usr/ports/sysutils/ezjail/work/stage/usr/local/share/examples/ezjail/example/usr/local/etc/sudoers
+====> Compressing man pages (compress-man)
+===>  Installing for ezjail-3.4.2
+===>  Checking if ezjail already installed
+===>   Registering installation for ezjail-3.4.2
+Installing ezjail-3.4.2...
+===>  Cleaning for ezjail-3.4.2
+@udoo:ezjail $ which ezjail-admin
+/usr/local/bin/ezjail-admin
+@udoo:~ $ sudo ezjail-admin install -sp
+
+
+
+```
 
 ## Other virtualization technologies
 ### Full virtualization
@@ -134,6 +210,9 @@ docker@default:~$ uname -a
 Linux default 4.4.16-boot2docker #1 SMP Fri Jul 29 00:13:24 UTC 2016 x86_64 GNU/Linux
 docker@default:~$
 ```
+
+
+## Questions?
 
 ```
 @C02NN3NBG3QT:talks $ cowsay Thanks for learning about FreeBSD jails!
