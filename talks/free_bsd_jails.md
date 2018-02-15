@@ -143,10 +143,51 @@ chmod 0440 /usr/ports/sysutils/ezjail/work/stage/usr/local/share/examples/ezjail
 ===>   Registering installation for ezjail-3.4.2
 Installing ezjail-3.4.2...
 ===>  Cleaning for ezjail-3.4.2
+
 @udoo:ezjail $ which ezjail-admin
 /usr/local/bin/ezjail-admin
+
 @udoo:~ $ sudo ezjail-admin install -sp
 
+@udoo:~ $ ifconfig
+re0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+        ether 00:00:00:00:00:00
+        hwaddr 00:00:00:00:00:00
+        inet 192.168.2.49 netmask 0xffffff00 broadcast 192.168.2.255
+        nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+        media: Ethernet autoselect (1000baseT <full-duplex>)
+        status: active
+vboxnet0: flags=8943<UP,BROADCAST,RUNNING,PROMISC,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        ether 00:00:00:00:00:00
+        hwaddr 00:00:00:00:00:00
+        inet 10.2.1.1 netmask 0xffffff00 broadcast 10.2.1.255
+        nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+        media: Ethernet autoselect
+        status: active
+
+@udoo:~ $ sudo ifconfig em0 alias 192.168.99.100 netmask 0xffffff00 broadcast 192.168.99.255
+@udoo:~ $ sudo echo 'ifconfig_em0_alias0="inet 192.168.99.100 netmask 0xffffff00 broadcast 192.168.99.255"' >> /etc/rc.conf
+@udoo:~ $ sudo echo 'ezjail_enable="YES"' >> /etc/rc.conf
+
+@udoo:~ $ sudo ezjail-admin create jails.bsd 192.168.99.100
+@udoo:~ $ sudo cp /etc/resolv.conf /usr/jails/jails.bsd/etc/
+@udoo:~ $ sudo service ezjail start
+
+jls
+
+
+@udoo:~ $ sudo ezjail-admin console bsdnow.tv
+
+Last login: Sun Dec 29 03:08:29 on pts/17
+FreeBSD 9.2-RELEASE (GENERIC) #0 r255898: Fri Sep 27 03:52:52 UTC 2013
+
+Welcome to FreeBSD!
+
+exit
+
+@udoo:~ $ sudo ezjail-admin stop bsdnow.tv
+@udoo:~ $ sudo ezjail-admin archive bsdnow.tv
 
 
 ```
@@ -233,3 +274,4 @@ docker@default:~$
 - https://www.freebsd.org/cgi/man.cgi?query=chroot&sektion=2&manpath=freebsd-release-ports
 - https://en.wikipedia.org/wiki/Hardware-assisted_virtualization
 - https://github.com/skilbjo/articles/blob/master/talks/unix.md
+q
