@@ -144,11 +144,10 @@ chmod 0440 /usr/ports/sysutils/ezjail/work/stage/usr/local/share/examples/ezjail
 Installing ezjail-3.4.2...
 ===>  Cleaning for ezjail-3.4.2
 
+@udoo:~ $ docker-machine create --driver "virtualbox" --virtualbox-hostonly-cidr "192.168.99.1/24" default
 @udoo:ezjail $ which ezjail-admin
 /usr/local/bin/ezjail-admin
-
 @udoo:~ $ sudo ezjail-admin install -sp
-
 @udoo:~ $ ifconfig
 re0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
@@ -159,38 +158,28 @@ re0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
         media: Ethernet autoselect (1000baseT <full-duplex>)
         status: active
 vboxnet0: flags=8943<UP,BROADCAST,RUNNING,PROMISC,SIMPLEX,MULTICAST> metric 0 mtu 1500
-        ether 00:00:00:00:00:00
-        hwaddr 00:00:00:00:00:00
-        inet 10.2.1.1 netmask 0xffffff00 broadcast 10.2.1.255
+        ether 0a:00:27:00:00:00
+        hwaddr 0a:00:27:00:00:00
+        inet 192.168.99.1 netmask 0xffffff00 broadcast 192.168.99.255
         nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
         media: Ethernet autoselect
         status: active
-VBoxManage hostonlyif ipconfig vboxnet0 --ip 192.168.99.100 --netmask 192.168.99.255
-VBoxManage hostonlyif ipconfig vboxnet0 --ip 192.168.99.100 --netmask 255.255.255.0
-VBoxManage hostonlyif ipconfig vboxnet0 --ip 192.168.99.100 --netmask 255.255.255.0
- 61                             [--paravirtdebug <key=value> [,<key=value> ...]]_                          │@udoo:~ $ VBoxManage showvminfo "default" | grep -i nic
- 62                             [--hwvirtex on|off]_                                                       │NIC 1:           MAC: 080027688C11, Attachment: NAT, Cable connected: on, Trace: off (file: none), Type: 82540EM, Reported speed: 0 Mbps, Boot priority: 0, Promisc Policy: de
- 63                             [--nestedpaging on|off]_                                                   │ny, Bandwidth group: none
- 64                             [--largepages on|off]_                                                     │NIC 1 Settings:  MTU: 0, Socket (send: 64, receive: 64), TCP Window (send:64, receive: 64)
- 65                             [--vtxvpid on|off]_                                                        │NIC 1 Rule(0):   name = ssh, protocol = tcp, host ip = 127.0.0.1, host port = 20731, guest ip = , guest port = 22
- 66                             [--vtxux on|off]_                                                          │NIC 1 Rule(1):   name = tcp-port8080, protocol = tcp, host ip = , host port = 8080, guest ip = , guest port = 8080
- 67                             [--pae on|off]_                                                            │NIC 1 Rule(2):   name = tcp-port8443, protocol = tcp, host ip = , host port = 8443, guest ip = , guest port = 8443
- 68                             [--longmode on|off]_                                                       │NIC 2:           MAC: 080027A6B04F, Attachment: Host-only Interface 'vboxnet0', Cable connected: on, Trace: off (file: none), Type: 82540EM, Reported speed: 0 Mbps, Boot prio
- 69                             [--cpu-profile "host|Intel 80[86|286|386]"]_                               │rity: 0, Promisc Policy: deny, Bandwidth group: none
- 70                             [--cpuid-portability-level <0..3>_                                         │NIC 3:           disabled
+@udoo:~ $ sudo service netif cloneup
+@udoo:~ $ sudo cd /usr/src; sudo make buildworld
+@udoo:~ $ sudo ezjail-admin update -i -p
+@udoo:~ $ sudo ezjail-admin create dnsjail 'lo1|127.0.1.1,em0|192.168.1.50'
+@udoo:~ $ sudo ezjail-admin start dnsjail
+@udoo:~ $ sudo ezjail-admin console dnsjail
 
-
-@udoo:~ $ sudo ifconfig em0 alias 192.168.99.100 netmask 0xffffff00 broadcast 192.168.99.255
-@udoo:~ $ sudo echo 'ifconfig_em0_alias0="inet 192.168.99.100 netmask 0xffffff00 broadcast 192.168.99.255"' >> /etc/rc.conf
+@udoo:~ $ sudo ifconfig em0 alias 192.168.100.1 netmask 0xffffff00 broadcast 192.168.100.255
+@udoo:~ $ sudo echo 'ifconfig_em0_alias0="inet 192.168.100.1 netmask 0xffffff00 broadcast 192.168.100.255"' >> /etc/rc.conf
 @udoo:~ $ sudo echo 'ezjail_enable="YES"' >> /etc/rc.conf
 
 @udoo:~ $ sudo ezjail-admin create jails.bsd 192.168.99.100
 @udoo:~ $ sudo cp /etc/resolv.conf /usr/jails/jails.bsd/etc/
 @udoo:~ $ sudo service ezjail start
 
-jls
-
-
+@udoo:~ $ jls
 @udoo:~ $ sudo ezjail-admin console bsdnow.tv
 
 Last login: Sun Dec 29 03:08:29 on pts/17
@@ -202,8 +191,6 @@ exit
 
 @udoo:~ $ sudo ezjail-admin stop bsdnow.tv
 @udoo:~ $ sudo ezjail-admin archive bsdnow.tv
-
-
 ```
 
 ## Other virtualization technologies
@@ -288,4 +275,5 @@ docker@default:~$
 - https://www.freebsd.org/cgi/man.cgi?query=chroot&sektion=2&manpath=freebsd-release-ports
 - https://en.wikipedia.org/wiki/Hardware-assisted_virtualization
 - https://github.com/skilbjo/articles/blob/master/talks/unix.md
+- https://www.freebsd.org/doc/handbook/jails-ezjail.html
 q
