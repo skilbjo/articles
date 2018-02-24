@@ -242,18 +242,23 @@ it! Intel added this technology in 2005.
 <img src='../lib/emulate.png' width='800' />
 
 ### Paravirtualization
-Paravirtualization is a technique with a
+Paravirtualization is a technique with where you try to run software natively
+as much as possible; reduce overhead.
+
 #### xen hypervisor
-Microkernel design, interacts with guests via dom0 over a "hypercall" (vs system call)
-using an ABI (application binary interface) (vs API).
+Microkernel design, interacts with guests via dom0 over a "hypercall" (vs
+system call) using an ABI (application binary interface) (vs API).
 
 ### Virtual Machines
 #### VirtualBox
-Hypervisor for x86 computers, developed originally by Innotek; acquired by Sun Microsystems; acquired by Oracle.
+Hypervisor for x86 computers, developed originally by Innotek; acquired by Sun
+Microsystems; acquired by Oracle.
 
 #### Vagrant
 A software that creates software development environments for VirtualBox; ie
-packages, port forwarding, VM distro. Sits on top of VirtualBox, acts as a wrapper, automates the configuration of virtual environments described by Chef and Puppet.
+packages, port forwarding, VM distro. Sits on top of VirtualBox, acts as a
+wrapper, automates the configuration of virtual environments described by Chef
+and Puppet.
 
 Commonly uses other technologies in the ecosystem such
 as Chef, Ansible, and Puppet.
@@ -406,6 +411,7 @@ DESCRIPTION
      Some system calls, when allowed, have restrictions applied to them:
 
      pledge() Can only reduce permissions for promises and execpromises.
+```
 
 ```
 @C02NN3NBG3QT:talks $ uname -a
@@ -432,7 +438,6 @@ docker@default:~$ uname -a
 Linux default 4.4.16-boot2docker #1 SMP Fri Jul 29 00:13:24 UTC 2016 x86_64 GNU/Linux
 docker@default:~$
 ```
-
 
 ## Questions?
 
