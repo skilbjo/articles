@@ -27,7 +27,7 @@ kernel, such as Debian GNU/kNetBSD on top of the NetBSD kernel, or Orbis OS
 Note: Apple's iOS and macOS along with the Darwin kernel include a large amount
 of code derived from FreeBSD.
 
-<img src='../lib/freebsd.jpg' width=700 />
+<img src='../lib/os_wars.png' width=700 />
 
 ## Jails
 ### Why?
@@ -72,6 +72,8 @@ DESCRIPTION
      Any other value for `kern.chroot_allow_open_directories' will bypass the
      check for open directories
 ```
+
+<img src='../lib/freebsd.jpg' width=700 />
 
 Why virtualize? Primarily, so the app will run, damnit. "Write once, run anywhere"
 concept. As long as the developer packages the app initially in a virtualization
@@ -315,7 +317,95 @@ on macOS, you need to install a Linux VM such as boot2docker or others}.
 
 #### FreeBSD capscium
 
+<img src='../lib/bsd_wars.png' width=700 />
+
+```
+CAPSICUM(4)            FreeBSD Kernel Interfaces Manual            CAPSICUM(4)
+
+NAME
+     Capsicum - lightweight OS capability and sandbox framework
+
+SYNOPSIS
+     options CAPABILITY_MODE
+     options CAPABILITIES
+
+DESCRIPTION
+     Capsicum is a lightweight OS capability and sandbox framework
+     implementing a hybrid capability system model.  Capsicum can be used for
+     application and library compartmentalisation, the decomposition of larger
+     bodies of software into isolated (sandboxed) components in order to
+     implement security policies and limit the impact of software
+     vulnerabilities.
+
+     Capsicum provides two core kernel primitives:
+
+     capability mode
+             A process mode, entered by invoking cap_enter(2), in which access
+             to global OS namespaces (such as the file system and PID
+             namespaces) is restricted; only explicitly delegated rights,
+             referenced by memory mappings or file descriptors, may be used.
+             Once set, the flag is inherited by future children processes, and
+             may not be cleared.
+
+     capabilities
+             Limit operations that can be called on file descriptors.  For
+             example, a file descriptor returned by open(2) may be refined
+             using cap_rights_limit(2) so that only read(2) and write(2) can
+             be called, but not fchmod(2).  The complete list of the
+             capability rights can be found in the rights(4) manual page.
+```
+
 #### OpenBSD pledge()
+A syscall that annotates what a program can do; the kernel will kill the
+process if the program exceeds its scope.
+
+If a program needs real-only access to a file, the pledge guards are:
+
+```c
+if (pledge(“stdio rpath”, NULL) == -1)
+  err(1, “pledge”);
+```
+
+
+```
+PLEDGE(2)              System Calls Manual                           PLEDGE(2)
+
+NAME
+     pledge — restrict system operations
+
+SYNOPSIS
+     #include <unistd.h>
+     int
+     pledge(const char *promises, const char *execpromises);
+
+DESCRIPTION
+     The current process is forced into a restricted-service operating mode. A
+     few subsets are available, roughly described as computation, memory
+     management, read-write operations on file descriptors, opening of files,
+     networking. In general, these modes were selected by studying the
+     operation of many programs using libc and other such interfaces, and
+     setting promises or execpromises.
+
+     Use of pledge() in an application will require at least some study and
+     understanding of the interfaces called. Subsequent calls to pledge() can
+     reduce the abilities further, but abilities can never be regained.
+
+     A process which attempts a restricted operation is killed with an
+     uncatchable SIGABRT, delivering a core file if possible. A process
+     currently running with pledge has state ‘p’ in ps(1) output; a process
+     that was terminated due to a pledge violation is accounted by lastcomm(1)
+     with the ‘P’ flag.
+
+     A promises value of "" restricts the process to the _exit(2) system call.
+     This can be used for pure computation operating on memory shared with
+     another process.
+
+     Passing NULL to promises or execpromises specifies to not change the
+     current value.
+
+     Some system calls, when allowed, have restrictions applied to them:
+
+     pledge() Can only reduce permissions for promises and execpromises.
 
 ```
 @C02NN3NBG3QT:talks $ uname -a
@@ -366,4 +456,3 @@ docker@default:~$
 - https://en.wikipedia.org/wiki/Hardware-assisted_virtualization
 - https://github.com/skilbjo/articles/blob/master/talks/unix.md
 - https://www.freebsd.org/doc/handbook/jails-ezjail.html
-q
