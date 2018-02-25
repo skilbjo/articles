@@ -3,6 +3,8 @@
 ## BSD
 <img src='../lib/unix-history-simple.png' width=700 />
 
+<img src='../lib/unix-timeline.png' width=700 />
+
 See more in my talk about [Unix](./unix.md).
 
 Berkeley Software Distribution, Berkeley Unix, or BSD, is a Unix-like operating
