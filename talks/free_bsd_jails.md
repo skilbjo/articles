@@ -149,6 +149,9 @@ Installing ezjail-3.4.2...
 ===>  Cleaning for ezjail-3.4.2
 
 @udoo:~ $ docker-machine create --driver "virtualbox" --virtualbox-hostonly-cidr "192.168.99.1/24" default
+@udoo:~ $ docker-machine stop default
+@udoo:~ $ docker-machine start default
+@udoo:~ $ docker-machine regenerate-certs default
 @udoo:ezjail $ which ezjail-admin
 /usr/local/bin/ezjail-admin
 @udoo:~ $ sudo ezjail-admin install -sp
