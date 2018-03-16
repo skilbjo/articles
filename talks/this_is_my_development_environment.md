@@ -30,8 +30,9 @@ Bash (GNU's take on Stephen Bourne's /bin/sh program, sarcastically named
 Linux) is the default shell of mac OS and most Linux distributions.
 
 as an aside, here are some notable Unix systems with non-bash default shells:
-FreeBSD = /bin/tcsh (the C shell)
-OpenBSD = /bin/ksh  (the Korn shell)
+
+- FreeBSD = /bin/tcsh (the C shell)
+- OpenBSD = /bin/ksh  (the Korn shell)
 
 Additionally, here are some fantastic bash settings that make it friendlier to use:
 
