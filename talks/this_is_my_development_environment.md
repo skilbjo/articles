@@ -2,6 +2,13 @@
 
 <img src='https://raw.githubusercontent.com/skilbjo/articles/master/lib/k%26r-pdp11.jpg' width=900 />
 
+A development environment is the work station of engineer; the mechanic in his
+workshop. A craftsman by trade, he will go to extreme lengths to perfect the
+workstation.
+
+Here are some of my favorite tools, that I take pride in working in and
+developing in.
+
 ### operating system: unix
 
 Ken Thompson and Dennis Ritchie, albeit standing on the shoulders of giants,
