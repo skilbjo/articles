@@ -23,8 +23,6 @@ See my unix talk: https://github.com/skilbjo/articles/blob/master/talks/unix.md
 
 <img src='https://raw.githubusercontent.com/skilbjo/articles/master/lib/unix-timeline.png' width=900 />
 
-<img src='../lib/z1.jpg' width='900' />
-
 ### shell: bash
 
 Bash (GNU's take on Stephen Bourne's /bin/sh program, sarcastically named
