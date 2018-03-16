@@ -15,7 +15,7 @@ See my unix talk: https://github.com/skilbjo/articles/blob/master/talks/unix.md
 
 <img src='https://raw.githubusercontent.com/skilbjo/articles/master/lib/unix-timeline.png' width=900 />
 
-<img src='../lib/z1.png' width='900' />
+<img src='../lib/z1.jpg' width='900' />
 
 ## shell: bash
 
@@ -156,37 +156,38 @@ inability to find security flaws or bugs in tmux.
 
 ## programming language: Clojure
 
-<img src='../lib/eniac.png' width='900' />
+<img src='../lib/eniac.jpg' width='900' />
 
 
 Clojure is a breath of fresh air with mystical roots. Here are examples of
 technology stacks a business might use from various eras in the history of
 computing:
 
-pre-1940s: accountants, actuaries
-1943-1949: vacuum tubes
--1958 invention of the integrated circuit-
--1958 also: the invention of the LISP programming language!-
-1949-1972: assembly (various dialects, dependant on the vendors processor API)
-1972-1993: the C programming language (meant original to generate various assembly dialects from one source code)
-1995-2007: Java programming language (the preferred enterprise language!)
-2007: Ruby on Rails (sarcastically!)
--2007 initial public release of Clojure-
-2008-2015: Python (first invented: 1991, before Java!)
-2015-modern era: Clojure!
+- pre-1940s: accountants, actuaries
+- 1943-1949: vacuum tubes
+*1958 invention of the integrated circuit*
+*1958 also: the invention of the LISP programming language!*
+- 1949-1972: assembly (various dialects, dependant on the vendors processor API)
+- 1972-1993: the C programming language (meant original to generate various assembly dialects from one source code)
+- 1995-2007: Java programming language (the preferred enterprise language!)
+- 2007: Ruby on Rails (sarcastically!)
+*2007 initial public release of Clojure*
+- 2008-2015: Python (first invented: 1991, before Java!)
+- 2015-modern era: Clojure!
 
 Clojure is phenomenal. The ability for it to target multiple runtimes is
 phenomenal.  Its primary platform is the Java Virtual Machine, but other target
 implementations exist; the most popular: Clojurescript (can run in the browser
 or with node.js). There is also ClojureCLR that interoperates with .NET. There
 are also variant implementations such as:
+
 -clojure-py: Clojure to run on Python
 -rouge: Clojure atop Ruby
 -CljPerl: Clojure atop Perl
 
 See my (learn (LISP)) talk here: <https://github.com/skilbjo/articles/tree/master/2600>
 
-<img src='../lib/lisp_warning.png' width=900 />
+<img src='../lib/lisp_warning.png' width=400 />
 
 ## database: Postgresql
 
