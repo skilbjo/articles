@@ -165,13 +165,13 @@ computing:
 
 - pre-1940s: accountants, actuaries
 - 1943-1949: vacuum tubes
-*1958 invention of the integrated circuit*
-*1958 also: the invention of the LISP programming language!*
 - 1949-1972: assembly (various dialects, dependant on the vendors processor API)
+*Also: 1958 invention of the integrated circuit*
+*Also: 1958: the invention of the LISP programming language!*
 - 1972-1993: the C programming language (meant original to generate various assembly dialects from one source code)
 - 1995-2007: Java programming language (the preferred enterprise language!)
 - 2007: Ruby on Rails (sarcastically!)
-*2007 initial public release of Clojure*
+*Also: 2007 initial public release of Clojure*
 - 2008-2015: Python (first invented: 1991, before Java!)
 - 2015-modern era: Clojure!
 
@@ -187,7 +187,7 @@ are also variant implementations such as:
 
 See my (learn (LISP)) talk here: <https://github.com/skilbjo/articles/tree/master/2600>
 
-<img src='../lib/lisp_warning.png' width=400 />
+<img src='../lib/lisp_warning.png' width=300 />
 
 ## database: Postgresql
 
@@ -196,7 +196,7 @@ See my (learn (LISP)) talk here: <https://github.com/skilbjo/articles/tree/maste
 ## cloud: aws
 
 ## others
-version control: git/github
-hardware setup: macOS laptop, wireless mac keyboard, mac magic mouse, mac trackpad, 1/2 large screens
-chat: slack
-infrastructure tools: kafka
+- version control: git/github
+- hardware setup: macOS laptop, wireless mac keyboard, mac magic mouse, mac trackpad, 1/2 large screens
+- chat: slack
+- infrastructure tools: kafka
