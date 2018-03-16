@@ -1,7 +1,8 @@
-
-## operating system: unix
+## This is my development environment
 
 <img src='https://raw.githubusercontent.com/skilbjo/articles/master/lib/k%26r-pdp11.jpg' width=900 />
+
+### operating system: unix
 
 Ken Thompson and Dennis Ritchie, albeit standing on the shoulders of giants,
 have done so much for computing as we know it today. They've won the Turing
@@ -17,7 +18,7 @@ See my unix talk: https://github.com/skilbjo/articles/blob/master/talks/unix.md
 
 <img src='../lib/z1.jpg' width='900' />
 
-## shell: bash
+### shell: bash
 
 Bash (GNU's take on Stephen Bourne's /bin/sh program, sarcastically named
 "bourne again shell"; which is inline with other GNU acronyms like GNU's Not
@@ -41,7 +42,7 @@ Also as an aside, I personally enjoy the Fish shell ("Finally, a command line sh
 
 <img src='../lib/fish_shell.png' width='900' />
 
-## text editor: vim
+### text editor: vim
 
 <img src='../lib/alpine_and_vi.png' width='900' />
 
@@ -136,7 +137,7 @@ NeoBundle 'venantius/vim-cljfmt'        " :cljfmt in vim
 NeoBundle 'venantius/vim-eastwood'      " clojure linter
 ```
 
-## terminal multiplexer: tmux
+### terminal multiplexer: tmux
 
 <img src='../lib/tmux.png' width='900' />
 
@@ -189,13 +190,13 @@ See my (learn (LISP)) talk here: <https://github.com/skilbjo/articles/tree/maste
 
 <img src='../lib/lisp_warning.png' width=300 />
 
-## database: Postgresql
+### database: Postgresql
 
-## cloud environment: aws
+### cloud environment: aws
 
-## cloud: aws
+### cloud: aws
 
-## others
+### others
 - version control: git/github
 - hardware setup: macOS laptop, wireless mac keyboard, mac magic mouse, mac trackpad, 1/2 large screens
 - chat: slack
