@@ -196,11 +196,39 @@ See my (learn (LISP)) talk here: <https://github.com/skilbjo/articles/tree/maste
 
 <img src='../lib/lisp_warning.png' width=300 />
 
-### database: Postgresql
+### database: PostgresSQL
+
+Relational databases are specialized systems to store data on disk in complex
+structures that make it easy to run set theory queries on. Databases are
+incredibly interesting to me as a data engineer.
+
+There are many databases to choose from. As a Unix guy, I like free and open
+source software; so let's scratch off SQL Server and Oracle. That leaves MySQL
+and PostgresSQL. MySQL, while open source, is owned by Oracle. I have worked
+with both (and SQL Server!) and prefer PostgresSQL. Personally it seems a more
+mature product, with lots of well thought out features and implmentations. That
+said, SQL Server implements transact-SQL which is a pleasure to write;
+especially with the PIVOT feature- you can write SQL that writes its own SQL.
+
+Here is an (old) write up of some of the feature differences: <https://stackoverflow.com/questions/8181604/postgres-9-1-vs-mysql-5-6-innodb>
+
+(Side note, SQLlite is an option, as it's actually the database used for your
+text messages if you have an iPhone, but I'd consider PostgresSQL far more
+seriously)
+
+Postgres originated in Berkeley from the Ingres project in the mid 80s. Similar
+to the origin story of Unix (from Multics), Postgres means Post Ingres.
 
 ### cloud environment: aws
 
-### cloud: aws
+(full disclosure: I hold some Amazon stock. Not much, but I'm a believer in AWS)
+
+Some of my favorite AWS blog posts / links:
+
+- <https://alestic.com/2016/12/aws-invoice-example/>
+- <https://alestic.com/2014/11/aws-lambda-environment/>
+- <https://github.com/skilbjo/lambdas>
+- <https://hackernoon.com/how-did-i-hack-aws-lambda-to-run-docker-containers-7184dc47c09b>
 
 ### others
 - version control: git/github
