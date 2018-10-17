@@ -16,6 +16,7 @@
 - LXC containers
 - cgroups, kernel namespaces
 - union file system
+- docker layer caching
 - libcontainer
 - how it works at execution (docker image creates tmp directory, runs process there)
 
