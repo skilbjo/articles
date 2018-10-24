@@ -115,7 +115,8 @@ first introduced in 2000, long before LXC containers (2008) or Docker (2013)
 were first released.
 
 Jails are a BSD userland software to run on top of chroot(2) system call, which
-came before Docker and are very similar to Docker.
+came before Docker and are very similar to Docker. Jails can only be used on
+FreeBSD, and are not nearly as popular as Docker is.
 
 > Since system administration is a difficult task, many tools have been
 > developed to make life easier for the administrator. These tools often
@@ -123,7 +124,8 @@ came before Docker and are very similar to Docker.
 > tools which can be used to enhance the security of a FreeBSD system is jails.
 > Jails have been available since FreeBSD 4.X and continue to be enhanced in
 > their usefulness, performance, reliability, and security.
-> -- FreeBSD Handbook, Chapter 14. Jails
+
+-- FreeBSD Handbook, Chapter 14. Jails
 
 ### tools & terminology
 There are several tools to using docker. The Docker client is `docker`, which
