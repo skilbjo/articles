@@ -96,9 +96,68 @@ command warrants that exit code. Any exit code can be thrown however, as demonst
 
 Variables
 
+
+
 Style guide
+- indentation: 2 spaces
+- no tabs
+- variables, functions, and file names all have descriptive names, unless using
+  standard convention (using i in for loop, i being the incrementor)
+- use `"$(command substitution)"` instead of `\`backticks`\`
+- variables with no variable access in single quotes, variables with variable
+  expansion with double quotes. ie `base_url='https://www.codementor.io'` and
+  `full_url="${url}/${endpoint}?${query_parameters}"`
 
 Named arguments
+
+```bash
+tmp_dir="$(mkdir -p /tmp/email && echo '/tmp/email')"
+report=''
+distro_list=''
+html=''
+date_override=''
+body_override=''
+
+usage(){
+  echo "Usage: email: ${0} [--report <file_path>] [--distro-list <'distro@list.com'>]" 1>&2
+  echo "                   [--html] [--date-override <date>] [--body-override <body>]" 1>&2
+  echo "       Do not use --html and body override in the same call.                 " 1>&2
+  exit 1
+}
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -r|--report)        report="$2";        shift ;;
+    -l|--distro-list)   distro_list="$2";   shift ;;
+    -h|--html)          html='y' ;;
+    -d|--date-override) date_override="$2"; shift;;
+    -b|--body-override) body_override="$2"; shift;;
+    *) break ;;
+  esac
+  shift
+done
+if [[ -z $report ]] || [[ -z $distro_list ]]; then usage; fi
+if [[ ! -z $html ]] && [[ ! -z $body_override ]]; then usage; fi
+
+email(){
+  local report="$1"
+  local distro_list="$2"
+  local html="$3"
+  local date_override="$4"
+  local body_override="$5"
+
+  if [[ $(whoami) == 'root' ]]; then            # docker (k8s, odroid, pi)
+    curl_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
+  elif [[ $(whoami) == 'sbx_'* ]]; then         # AWS Lambda
+    curl_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
+  elif [[ $(whoami) == 'skilbjo' ]]; then       # mac OS
+    curl_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
+    #mutt_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
+  fi
+}
+
+email "$report" "$distro_list" "$html" "$date_override" "$body_override"
+```
+
 
 Sourcing files
 
@@ -109,22 +168,23 @@ For syncing your dotfiles across many devices (work computer, home computer, ssh
 Execute Commands / Run scripts / Commands
 
 Some great / handy programs
-Htop
-Tree
-Ack
-Vim
-Tmux
-Bc
-Gzip
-Watch
+- man: man - format and display the on-line manual pages.
+- htop: interactive process viewer / a more modern `top` command
+- tree: visual version of `ls` command
+- ack: quickly search for file contents of many files
+- vim: vim - Vi IMproved, a programmer's text editor
+- tmux: tmux -- terminal multiplexer
+- bc: evaluate simple mathmatical equations. ie: `sleep "$(echo '60 * 5' | bc)" # sleep for 5 min`
+- gzip: compression/decompression tool. compress: `gzip -9 [file]`. decompress: `gzip -d [file].gz`
+- watch: run the same command repeatedly in an ncurses window. `watch -n1 'docker ps | grep 'my-container'`
 
 
 
 Other shells
-Zsh
-Ksh
-Tcsh
-Fish
+- zsh: z shell
+- ksh: korn shell
+- tcsh: c shell
+- fish: a modern shell
 
 []Linux: Linux is custom so distribution maintainers may craft special versions of Linux that may not use Bash. An example is Alpine Linux, the default distribution meant for Docker containers, which uses almquist shell (a lightweight clone of the Bourne Shell)
 [] Linux is also referred to as GNU/Linux
