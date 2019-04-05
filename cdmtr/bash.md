@@ -60,8 +60,9 @@ the core binary executables such as `sed`, bundled in a package called
 
 ## What you need to know (main body of the article)
 I assume you are already know your way around bash, so I will skip much of the
-basic content. However, if you want to brush up, [find good link] is a good
-place to start
+basic content. However, if you want to brush up, [this
+tutoral](https://linuxconfig.org/bash-scripting-tutorial-for-beginners) is a
+good place to start.
 
 ### Friendly interactive behavior
 Here are some settings I add to my `~/.profile` (where you place bash settings,
@@ -126,18 +127,56 @@ command warrants that exit code. Any exit code can be thrown however, as demonst
 ```
 
 ### Variables
+I assume you have already used variables so will skip most content here. However,
+I occassionally see a misuse of variable expansion. Here are some good rules:
 
+- always quote the variable expansion:
 
+good:
+```bash
+do_some_stuff "$thing"
+```
 
-### Style guide
-- indentation: 2 spaces
-- no tabs
-- variables, functions, and file names all have descriptive names, unless using
-  standard convention (using i in for loop, i being the incrementor)
-- use `"$(command substitution)"` instead of `\`backticks`\`
-- variables with no variable access in single quotes, variables with variable
-  expansion with double quotes. ie `base_url='https://www.codementor.io'` and
-  `full_url="${url}/${endpoint}?${query_parameters}"`
+bad:
+```bash
+do_some_stuff $thing
+```
+
+- only use curly braces if adjacent to non-spaces; omit curly braces everywhere
+  else:
+
+good:
+```bash
+url="${base_url}/${endpoint}?${query_params}"
+```
+
+good:
+```bash
+msg="the api request returned: $result"
+```
+
+bad:
+```bash
+do_some_stuff ${thing}
+```
+
+bad:
+```bash
+do_some_stuff "${thing}"
+```
+
+Use single quotes if no variables present (reserve double quotes if using
+variable expansion):
+
+good:
+```bash
+base_url='https://www.gnu.org/'
+```
+
+bad:
+```bash
+base_url="https://www.gnu.org/"
+```
 
 ### Named arguments
 Bash uses positional arguments for function declarations and function calls.
@@ -186,7 +225,6 @@ email(){
     curl_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
   elif [[ $(whoami) == 'skilbjo' ]]; then       # mac OS
     curl_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
-    #mutt_email "$report" "$distro_list" "$html" "$date_override" "$body_override"
   fi
 }
 
@@ -199,34 +237,126 @@ and exits with an error (a common pattern in command line programs). I then use
 a while statement to parse the "$@" arguments (similar to `argc`/`argv` pattern
 in C language's `main` argument parsing, and based on the flags, set the global
 variables with the appropriate arguments. Then, I check if required arguments
-have been set, and if not, call my usage function (which will exit the script with an error code).
-Next, I have the logic of the script declared as functions, and
-finally, I call my main function (in this case, the function is called `email`,
-which enters the logic section (in this case, a script to send a custom email).
-
+have been set, and if not, call my usage function (which will exit the script
+with an error code).  Next, I have the logic of the script declared as
+functions, and finally, I call my main function (in this case, the function is
+called `email`, which enters the logic section (in this case, a script to send
+a custom email).
 
 ### Sourcing files
+A way to segment a potentially large bash script/application would be to split
+your application into multiple smaller files, and then load those files into
+memory at run-time. This can be done with:
+
+file foo
+```bash
+bar(){
+  echo 'I ran from a sourced file!'
+}
+```
+
+file run-it
+```bash
+#!/usr/bin/env bash
+
+source foo
+
+bar
+```
+
+would return:
+```bash
+$ ./run-it
+I ran from a sourced file!
+$
+```
+
+This is a similar approach to how libraries work in other programming languages
+(C, Python, Clojure). However, the Unix process model is more framed to
+executing independent programs: if the functions are helper functions or more
+of a library, they should be sourced in from the application's entrypoint. If
+they are independent programs, they should be invoked like any other Unix
+binary (and if the script takes arguments, should use the named arguments
+approach I reference above).
 
 ### Aliases (you can inline a function!)
+When becoming a wizard with the cli, you may wish you use your own shortcuts.
+
+A caveat though, is you cannot use aliases when using sudo or watch, ie.
+
+```bash
+@mbp2:cdmtr $ echo "alias 'docker.ssh'='docker-machine ssh default'" >>~/.aliases
+@mbp2:cdmtr $ source ~/.aliases
+@mbp2:cdmtr $ docker.ssh
+docker@default:~$ exit
+
+@mbp2:cdmtr $ watch -n5 docker.ssh
+sh: docker.ssh: command not found
+^C
+@mbp2:cdmtr $
+```
+
+### Style guide / Application development philosophy
+- variable expansion: see topic above
+- use functions as much as possible; only global portion of your script should
+  be the shebang, (limited) global variables, function declarations, and
+  entrypoint into the main function. Sourcing of any additional files can
+  happen inside a function, for example, a setup function
+- variables: use local variables as much as possible. passing data to and from
+  functions as arguments is better than using global variables
+- indentation: 2 spaces
+- no tabs
+- variables, functions, and file names all have descriptive names, unless using
+  standard convention (using i in for loop, i being the incrementor)
+- use `"$(command substitution)"` instead of `\`backticks`\`
+- variables with no variable access in single quotes, variables with variable
+  expansion with double quotes. ie `base_url='https://www.codementor.io'` and
+  `full_url="${url}/${endpoint}?${query_parameters}"`
+- generic functions that do one small thing, and one small thing well, are
+  preferrable
 
 ### Dotfiles + Github / Dropbox
-For syncing your dotfiles across many devices (work computer, home computer, ssh server, demo raspberry pis, girlfriend’s computer, etc)
-Execute Commands / Run scripts / Commands
+I like my comfy bash set up and don't want to have to default to context switch
+when moving from my work computer, home computer, single-board-computer cluster,
+AWS EC2 instances, and others.
 
-Some great / handy programs
+I place [my bash settings](https://github.com/skilbjo/dotfiles/) in a Dropbox
+folder, and then create a symbolic link at `~/.bashrc` that points to my
+Dropbox bashrc file. This works nicely, as I can add a new setting I may want
+to test for a while, across my main computers, before commiting it to a git
+repository and syncing it across all the other devices (many of which I do not
+have Dropbox installed on, like Linux and FreeBSD, but are able to use git).
+
+[Here is a tutorial](https://www.splitbrain.org/blog/2011-02/16-managing_dotfiles_with_dropbox) to get started.
+
+I even embed my favorite bashrc settings in docker containers I develop: [see
+this
+example](https://github.com/skilbjo/engineering/blob/master/deploy/default/bashrc)
+
+### Conclusion
+The investment you make in your core toolset will pay dividends for the rest of
+your career. While the programming languages you use may change, what is nearly
+guaranteed is you will need to use a shell. Bash is important in the
+day-to-day, and your investment here will let you be a better programmer
+elsewhere.
+
+### Some great / handy programs
+- bash-completion: not a program per say, but a handy tool that lets you use
+  TAB complete for program arguments, like git
 - man: man - format and display the on-line manual pages.
 - htop: interactive process viewer / a more modern `top` command
 - tree: visual version of `ls` command
 - ack: quickly search for file contents of many files
 - vim: vim - Vi IMproved, a programmer's text editor
 - tmux: tmux -- terminal multiplexer
-- bc: evaluate simple mathmatical equations. ie: `sleep "$(echo '60 * 5' | bc)" # sleep for 5 min`
-- gzip: compression/decompression tool. compress: `gzip -9 [file]`. decompress: `gzip -d [file].gz`
-- watch: run the same command repeatedly in an ncurses window. `watch -n1 'docker ps | grep 'my-container'`
+- bc: evaluate simple mathmatical equations. ie: `sleep "$(echo '60 * 5' | bc)"
+  # sleep for 5 min`
+- gzip: compression/decompression tool. compress: `gzip -9 [file]`. decompress:
+  `gzip -d [file].gz`
+- watch: run the same command repeatedly in an ncurses window. `watch -n1
+  'docker ps | grep 'my-container'`
 
-
-
-Other shells
+### Other shells to explore
 - ash / dash: almquist shell / debian almquist shell
 - zsh: z shell
 - ksh: korn shell
@@ -249,6 +379,7 @@ and how it works: https://www.youtube.com/watch?v=Q07PhW5sCEk
 - https://en.wikipedia.org/wiki/Bash_(Unix_shell)
 - https://en.wikipedia.org/wiki/Almquist_shell
 - https://www.reddit.com/r/copypasta/comments/63oudw/gnu_linux/
+- [hilarious article about deleting /bin/bash](https://medium.freecodecamp.org/i-accidentally-overwrote-bash-in-bash-e612da33da4b)
 
 ## bash source code
 - http://git.savannah.gnu.org/cgit/bash.git/
