@@ -2,8 +2,9 @@
 
 ## Why?
 Get to know your shell, which is the command interpreter for many variants of
-Unix. This means, Linux[]; \*BSD, and mac OS all use bash as the default login command
-interpreter.
+Unix. This means, Linux[]; \*BSD, and mac OS all use bash as the default login
+command interpreter. You can now even run bash on Windows with the Windows
+Subsystem for Linux (Richard Stallman must be thrilled!)!
 
 ## History / sh vs bash
 The Unix operating system was first written in 1969 by Ken Thompson and Dennis
@@ -83,7 +84,8 @@ to autocomplete. A great improvement! Additionally, there will be no more bell
 sound. Also, it will show you a list of files that match your autocomplete, and
 let you cycle through them with TAB until you get your match.
 
-Note complete list of files shown with just one TAB press after typing "cat [TAB]"
+Note complete list of files shown with just one TAB press after typing "cat
+[TAB]"
 ```bash
 @mbp2:src $ cat
 athena*      athena.user* email*
@@ -102,6 +104,10 @@ scripts (in addition to the shebang) is:
 set -euo pipefail
 ```
 
+This will lead to the script failing on any error or unset variable.
+
+Here are some more details on these settings:
+
 `set -e` (from `man bash`) is: exit immediately if a pipeline (which man
 consist of a single shell command... exits with a non-zero status.
 
@@ -117,7 +123,7 @@ exit code of the prior command is stored in the $? variable. Exit codes 1 - 2,
 126 - 165, and 255 all have special meanings, and should only be called if the
 command warrants that exit code. Any exit code can be thrown however, as demonstrated by the following:
 
-```
+```bash
 @mbp2:~ $ /usr/local/bin/bash -c 'exit 0'; echo $?
 0
 @mbp2:~ $ /usr/local/bin/bash -c 'exit 1'; echo $?
@@ -130,7 +136,9 @@ command warrants that exit code. Any exit code can be thrown however, as demonst
 I assume you have already used variables so will skip most content here. However,
 I occassionally see a misuse of variable expansion. Here are some good rules:
 
-- always quote the variable expansion:
+- always quote the variable expansion (this is because the quoting actually
+  preserves newline characters embedded in the variable, if present, whilst
+  non-quoted expansion will remove the newline characters:
 
 good:
 ```bash
@@ -143,7 +151,10 @@ do_some_stuff $thing
 ```
 
 - only use curly braces if adjacent to non-spaces; omit curly braces everywhere
-  else:
+  else (this is because curly braces are indented to explcitly signal the
+  variable, whereas the bash parser (as well as the reader) may become confused
+  (and assume the variable includes an adjacent character as the bash variable
+  name) may get confused if not explicity set:
 
 good:
 ```bash
@@ -165,8 +176,10 @@ bad:
 do_some_stuff "${thing}"
 ```
 
-Use single quotes if no variables present (reserve double quotes if using
-variable expansion):
+- Use single quotes if no variables present (reserve double quotes if using
+variable expansion) (this is because if I see single quotes, I am not expect to
+see variable expansion, whereas if I see double quotes, I expect to see
+variable expansion present):
 
 good:
 ```bash
@@ -281,6 +294,23 @@ approach I reference above).
 
 ### Aliases (you can inline a function!)
 When becoming a wizard with the cli, you may wish you use your own shortcuts.
+Place alias in an ~/.aliases file, with the syntax like this:
+
+```bash
+alias h='cd ~'
+alias mkdir='mkdir -p'
+alias vim='vim -p'
+alias man='function _(){ /usr/bin/man "$1" | col -xb | vim -;};_'
+alias ytdl='function _(){ cd ~/Desktop/; youtube-dl -x --audio-format mp3 "$1" & cd -;};_' # download youtube songs
+alias "psql.dw"='function _psql(){ psql "$db_uri" -c "$1"; };_psql'
+
+alias x='exit'
+alias a='cd ~/dev/aeon/'
+alias m='cd ~/dev/markets-etl/'
+alias b='cd ~/dev/bash-etl/'
+alias d='cd ~/dev'
+alias 'netstat.osx'='echo "Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)" && netstat -an | grep LISTEN'
+```
 
 A caveat though, is you cannot use aliases when using sudo or watch, ie.
 
