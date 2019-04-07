@@ -62,8 +62,9 @@ the core binary executables such as `sed`, bundled in a package called
 ## What you need to know (main body of the article)
 I assume you are already know your way around bash, so I will skip much of the
 basic content. However, if you want to brush up, [this
-tutoral](https://linuxconfig.org/bash-scripting-tutorial-for-beginners) is a
-good place to start.
+tutoral](https://www.codementor.io/celestine_eo/getting-started-with-bash-scripting-for-web-developers-rlufh8cdx)
+[or this](https://linuxconfig.org/bash-scripting-tutorial-for-beginners) are
+good places to start.
 
 ### Friendly interactive behavior
 Here are some settings I add to my `~/.profile` (where you place bash settings,
