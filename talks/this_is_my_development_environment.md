@@ -7,7 +7,7 @@ workshop. A craftsman by trade, he will go to extreme lengths to perfect the
 workstation.
 
 Here are some of my favorite tools, that I take pride in working in and
-developing in.
+developing on.
 
 ### operating system: unix
 
@@ -164,7 +164,6 @@ inability to find security flaws or bugs in tmux.
 ## programming language: Clojure
 
 <img src='../lib/eniac.jpg' width='900' />
-
 
 Clojure is a breath of fresh air with mystical roots. Here are examples of
 technology stacks a business might use from various eras in the history of

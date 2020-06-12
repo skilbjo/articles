@@ -1,12 +1,12 @@
-## docker: what's under the hood?
+## Docker: What's Under the Hood?
 
 <img src='../lib/docker/docker-engine.png' width='800' />
 
-Docker has taken its place in developers' workflow. Many articles exist on what
-Docker is and how to start using it. I aim to explain here the details of how
-the technology works.
+In recent years, Docker has taken a major place in developers' workflow. Many
+articles exist on what Docker is and how to start using it. I aim to explain
+the details of how the technology works.
 
-### docker features
+### Docker's Features
 One of the most important features in a Docker container versus a virtual
 machine is Docker's instant startup time. Within miliseconds, the Docker
 container and application can be started; as opposed to waiting for a virtual
