@@ -317,12 +317,47 @@ compiler / compiler toolchain programs: `gcc` / `cc` / `c99` / `clang`
 linkers: `ld`
 object dumper: `objdump`
 
+Now, we have a program. To turn it into a process (a running invocation of a
+program), we need to have a fork/exec and copy the program's instructions into
+our instructions and then set the instruction pointer to start at the
+entrypoint of the program.
+
 System call with switch into kernel mode, kernel code will read the cat program
-from disk, create a stake/heap.
+from disk, create a stack/heap, and then set the instruction pointer to the
+first line of main in the now-loaded process.
+
+<img src='../lib/operating-systems/program-v-process.png' width=400>
+
+Things a program will get from the operating system:
+- pretend it's the only program running
+- its own address space, which more addressable memory than is actually in the
+  system
+- a program counter / instruction pointer (used to manage the current state of
+  which instructions are to be run by the processor next)
+- a stack pointer and a frame pointer (useed to manage the stack for function
+  parameters and local variables)
+
+The operating system will then allow the process to temporarily take over
+control of the processor; but only for a short time. The operating system /
+kernel will reassert itself when an interrupt happens, such as a system call,
+an I/O interrupt, or a timer interrupt.
 
 ### Fork / exec (System calls)
 
+A process is created when a process clones itself and then copies the program's
+memory into its own memory. It is an unusual way of doing something (as opposed
+to say, the more natural way of just creating a new process), but this is the
+way it's done.
+
 ## Kernel, Userland, System Call
+
+System calls give programs an API to call kernel code and have the kernel go do
+something for the program. For example, in userland, a process can't normally
+start talking with the harddrive and requesting random blocks. Or, it can't
+start sending information into the IP layer. It does have the ability however
+to use the kernel API to read a file from disk, or send a packet. When this
+happens, the program interrupts, there is a context switch into kernel code,
+work happens, and then a context switch back into userland.
 
 ## Process Execution and Scheduling
 
@@ -338,13 +373,26 @@ start execution of program B
 ## Concurrency, Threading, Parallel Programming
 
 Concurrency - illusion of two or more things happening at once, when in reality
-only one thing is happening at a time
+only one thing is happening at a time.
 
 Threads -
+Threads are a unit of execution. In Linux, the only difference between a thread
+and a process, is a shared memory address (thread) vs a new memory address
+(process).
 
 Threads vs Processes
 
 Lightweight threads vs POSIX threads
+POSIX threads are a separate unit of execution as described above. However,
+some interpreted languages don't support POSIX threads and give a
+pseudo-thread, which is not the same. These are typically called green-threads.
+In python, there is something called a global interpreter lock (GIL), which
+prevents POSIX threading. However, in python, you can still do threading
+(managed by the python interpreter), but it will not allow multiple I/O to
+happen at once- only if there is blocking I/O happening, will it allow some
+CPU-intensive threads to run. However, if no CPU-work is available, it will
+yield and the process will put itself back on the blocked queue as opposed to
+keep running.
 
 Parallelism - two things actually happening at once. Many hazards!
 
@@ -403,3 +451,7 @@ Virtual Machines
 Containers: not a VM at all! Doesn't even try to be. Just provides process
 isolation and can constrain resources (max CPU, max RAM). Needs to be on a
 Linux system.
+
+## References
+- <http://www.lurklurk.org/linkers/linkers.html>
+- <http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-intro.pdf>
