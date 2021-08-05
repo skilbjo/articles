@@ -14,7 +14,6 @@ Best $50 investment I've made in my career
 
 Funding Circle hired me as an engineer in June 2016. Get in contact with us at
 <https://www.fundingcircle.com/us/about/careers/>, <techrecruit@fundingcircle.com>
-or <john.skilbeck@fundingcircle.com>
 
 <img src='../lib/clojure.png' width=400>
 
@@ -267,7 +266,7 @@ The cron file:
 ## -- variables -----------------------------------
   SHELL=/bin/bash
   PATH=:/bin:/usr/bin:/usr/local/bin:/usr/sbin:/usr/local/sbin
-  MAILTO=john.skilbeck@gmail.com
+  MAILTO=skilbjo@gmail.com
   cmd="deploy/bin/run-docker"
   app_dir="/home/skilbjo/deploy/app/markets-etl"
 

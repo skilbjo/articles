@@ -1,5 +1,5 @@
 # home datacenter: code deployment w/ arch linux + odroid
-by John Skilbeck
+by skilbjo
 
 ## Background
 DevOps is hard. Large softwares (mesos, kubernetes), teams (most tech organizations have a

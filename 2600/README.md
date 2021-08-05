@@ -1,7 +1,7 @@
 <img src="../lib/eval-apply.jpg" alt="lambda" width=500/>
 
 ## (learn (LISP))
-(by (John Skilbeck))
+(by (skilbjo))
 
 ### (why? (LISP))
 LISP is the language of the gods. It is the ultimate hacker's language. That comes
